@@ -55,7 +55,7 @@
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>$(CudaArchitecture)</CodeGeneration>
+      <CodeGeneration>$(CudaArchitecture);%(CodeGeneration)</CodeGeneration>
       <GenerateLineInfo>true</GenerateLineInfo>
       <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
     </CudaCompile>
@@ -79,7 +79,7 @@
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>$(CudaArchitecture)</CodeGeneration>
+      <CodeGeneration>$(CudaArchitecture);%(CodeGeneration)</CodeGeneration>
       <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
     </CudaCompile>
     <ClCompile>
