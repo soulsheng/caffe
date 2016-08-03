@@ -69,7 +69,8 @@ models/*
 *lmdb
 
 # build, distribute, and bins (+ python proto bindings)
-build
+build/int
+build/x64
 .build_debug/*
 .build_release/*
 distribute/*
