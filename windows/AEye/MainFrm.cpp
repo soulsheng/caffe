@@ -250,6 +250,11 @@ void CMainFrame::SetDockingWindowIcons(BOOL bHiColorIcons)
 
 }
 
+void CMainFrame::FillBuildWindow(std::string& msg)
+{
+	m_wndOutput.FillBuildWindow(msg);
+}
+
 // CMainFrame ’Ô∂œ
 
 #ifdef _DEBUG

@@ -71,7 +71,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "diy", "diy", "{B835FEAB-BAD
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test1image", "diy\test1image.vcxproj", "{664C581F-9D75-445C-B4A4-A6E1EB4A03C5}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AEye", "diy\AEye\AEye.vcxproj", "{DA557A99-D2B7-4A51-9B67-AA81910A27B8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AEye", "AEye\AEye.vcxproj", "{DA557A99-D2B7-4A51-9B67-AA81910A27B8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A9ACEF83-7B63-4574-A554-89CE869EA141} = {A9ACEF83-7B63-4574-A554-89CE869EA141}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -252,7 +255,7 @@ Global
 		{DA557A99-D2B7-4A51-9B67-AA81910A27B8}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{DA557A99-D2B7-4A51-9B67-AA81910A27B8}.Release|Win32.ActiveCfg = Release|Win32
 		{DA557A99-D2B7-4A51-9B67-AA81910A27B8}.Release|Win32.Build.0 = Release|Win32
-		{DA557A99-D2B7-4A51-9B67-AA81910A27B8}.Release|x64.ActiveCfg = Release|Win32
+		{DA557A99-D2B7-4A51-9B67-AA81910A27B8}.Release|x64.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

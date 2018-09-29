@@ -1,7 +1,12 @@
+#include "stdafx.h"
 #include "Classifier.h"
 
+Classifier::Classifier()
+{ 
 
-Classifier::Classifier(const string& model_file,
+}
+
+void Classifier::load(const string& model_file,
 	const string& trained_file,
 	const string& mean_file,
 	const string& label_file) {

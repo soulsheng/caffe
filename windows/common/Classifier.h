@@ -23,7 +23,9 @@ typedef std::pair<string, float> Prediction;
 
 class Classifier {
 public:
-	Classifier(const string& model_file,
+	Classifier();
+
+	void load(const string& model_file,
 		const string& trained_file,
 		const string& mean_file,
 		const string& label_file);

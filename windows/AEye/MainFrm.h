@@ -56,6 +56,9 @@ protected:
 
 	BOOL CreateDockingWindows();
 	void SetDockingWindowIcons(BOOL bHiColorIcons);
+
+public:
+	void	FillBuildWindow(std::string& msg);
 };
 
 

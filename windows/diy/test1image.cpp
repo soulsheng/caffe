@@ -15,7 +15,8 @@ int main(int argc, char** argv) {
 	string trained_file = argv[2];
 	string mean_file = argv[3];
 	string label_file = argv[4];
-	Classifier classifier(model_file, trained_file, mean_file, label_file);
+	Classifier classifier;
+	classifier.load(model_file, trained_file, mean_file, label_file);
 
 	string file = argv[5];
 

@@ -11,11 +11,13 @@
 
 #include "AEyeDoc.h"
 #include "AEyeView.h"
+#include "MainFrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
 
+#include <sstream>
 
 // CAEyeView
 
@@ -131,5 +133,55 @@ CAEyeDoc* CAEyeView::GetDocument() const // 非调试版本是内联的
 void CAEyeView::OnFileOpen()
 {
 	// TODO:  在此添加命令处理程序代码
+	CFileDialog dlg(TRUE,
+		"HyperSectral File(*.bil)|*.bil", NULL,
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+		"HyperSectral File(*.bil)|*.bil||", this);
+	INT_PTR result = dlg.DoModal();
+	if (result == IDOK)
+	{
+		CString fileName = dlg.GetPathName();
 
+		string file = fileName.GetBuffer();
+
+		std::ostringstream os;
+
+		os << "---------- Prediction for "
+			<< file << " ----------" << std::endl;
+
+		cv::Mat img = cv::imread(file, -1);
+		CHECK(!img.empty()) << "Unable to decode image " << file;
+		std::vector<Prediction> predictions = classifier.Classify(img);
+
+		for (size_t i = 0; i < predictions.size(); ++i) {
+			Prediction p = predictions[i];
+			os << std::fixed << std::setprecision(4) << p.second << " - \""
+				<< p.first << "\"" << std::endl;
+		}
+	}
+
+}
+
+void CAEyeView::setDefault()
+{
+	classifier.load(model_file, trained_file, mean_file, label_file);
+
+}
+
+void CAEyeView::release()
+{
+
+}
+
+void CAEyeView::outputInfo(const char* message, int value /*= -1*/)
+{
+	CMainFrame* pMFram = (CMainFrame*)AfxGetMainWnd();
+
+	std::ostringstream os;
+	os << message;
+
+	if (-1 != value)
+		os << " = " << value;
+
+	pMFram->FillBuildWindow(os.str());
 }

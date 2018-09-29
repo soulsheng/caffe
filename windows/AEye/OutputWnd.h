@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include <string>
+
 /////////////////////////////////////////////////////////////////////////////
 // COutputList ´°¿Ú
 
@@ -49,6 +51,8 @@ protected:
 // ÊµÏÖ
 public:
 	virtual ~COutputWnd();
+
+	void FillBuildWindow(std::string& msg);
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
