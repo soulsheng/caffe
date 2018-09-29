@@ -104,3 +104,8 @@ MANIFEST-*
 *.sdf
 *.opensdf
 *.pdb
+
+*Release*
+*Debug*
+*ipch*
+*.aps
