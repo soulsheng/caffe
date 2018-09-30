@@ -31,6 +31,8 @@ BEGIN_MESSAGE_MAP(CAEyeView, CView)
 	ON_WM_CONTEXTMENU()
 	ON_WM_RBUTTONUP()
 	ON_COMMAND(ID_FILE_OPEN, &CAEyeView::OnFileOpen)
+	ON_WM_TIMER()
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 // CAEyeView 构造/析构
@@ -63,6 +65,19 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 		return;
 
 	// TODO:  在此处为本机数据添加绘制代码
+	if (image.IsNull())
+		return;
+
+	CRect rect;
+	CDC *pDC = this->GetDC();
+	GetClientRect(rect);
+	HDC hDC = pDC->GetSafeHdc();
+
+	::SetStretchBltMode(hDC, HALFTONE);
+	::SetBrushOrgEx(hDC, 0, 0, NULL);
+
+	image.Draw(hDC, rect);
+	ReleaseDC(pDC);//释放picture控件的DC
 }
 
 
@@ -134,9 +149,9 @@ void CAEyeView::OnFileOpen()
 {
 	// TODO:  在此添加命令处理程序代码
 	CFileDialog dlg(TRUE,
-		"Jpeg(*.jpg)|*.jpg", NULL,
+		"*.jpg;*.jpeg", NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		"Jpeg(*.jpg)|*.jpg||", this);
+		"jpg(*.jpg;*.jpeg)|*.jpg;*.jpeg|| All Files (*.*) |*.*||||", this);
 	INT_PTR result = dlg.DoModal();
 	if (result == IDOK)
 	{
@@ -158,6 +173,8 @@ void CAEyeView::OnFileOpen()
 			os << std::fixed << std::setprecision(4) << p.second << " - \""
 				<< p.first << "\"" << std::endl;
 		}
+
+		image.Load(file.c_str());
 
 		outputInfo(os.str().c_str());
 	}
@@ -186,4 +203,25 @@ void CAEyeView::outputInfo(const char* message, int value /*= -1*/)
 		os << " = " << value;
 
 	pMFram->FillBuildWindow(os.str());
+}
+
+
+void CAEyeView::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO:  在此添加消息处理程序代码和/或调用默认值
+	OnDraw(this->GetDC());
+
+	CView::OnTimer(nIDEvent);
+}
+
+
+int CAEyeView::OnCreate(LPCREATESTRUCT lpCreateStruct)
+{
+	if (CView::OnCreate(lpCreateStruct) == -1)
+		return -1;
+
+	// TODO:  在此添加您专用的创建代码
+	SetTimer(0, 30, NULL);	//定时显示，一个30毫秒触发一次的定时器，30帧/秒 
+
+	return 0;
 }

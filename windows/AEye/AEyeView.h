@@ -60,6 +60,11 @@ protected:
 	string mean_file = "../../data/ilsvrc12/imagenet_mean.binaryproto";
 	string label_file = "../../data/ilsvrc12/synset_words.txt";
 
+	CImage image;
+
+public:
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 };
 
 #ifndef _DEBUG  // AEyeView.cpp 中的调试版本
