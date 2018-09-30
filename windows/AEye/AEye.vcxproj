@@ -41,6 +41,8 @@
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PlatformToolset>v120</PlatformToolset>
@@ -59,6 +61,9 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="..\CommonSettings.props" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="..\CommonSettings.props" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -70,6 +75,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(LibraryPath)</LibraryPath>
+    <OutDir>..\..\Build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\Build\\Int\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -123,10 +134,29 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <AdditionalIncludeDirectories>./;../common;../../../NugetPackages/boost.1.59.0.0/lib/native/include;../../../NugetPackages/gflags.2.1.2.1/build/native/include;../../../NugetPackages/glog.0.3.3.0/build/native/include;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/build/native/include;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native/include;../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native/include;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/include;../../../NugetPackages/OpenCV.2.4.10/build/native/include;../../../NugetPackages/protobuf-v120.2.6.1/build/native/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./;../common;../../../NugetPackages/boost.1.59.0.0/lib/native/include;../../../NugetPackages/gflags.2.1.2.1/build/native/include;../../../NugetPackages/glog.0.3.3.0/build/native/include;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native/include;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native/include;../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native/include;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/include;../../../NugetPackages/OpenCV.2.4.10/build/native/include;../../../NugetPackages/protobuf-v120.2.6.1/build/native/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLOG_NO_ABBREVIATED_SEVERITIES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
+    <Link>
+      <AdditionalDependencies>libboost_chrono-vc120-mt-1_59.lib;libboost_date_time-vc120-mt-1_59.lib;libboost_filesystem-vc120-mt-1_59.lib;libboost_python-vc120-mt-1_59.lib;libboost_system-vc120-mt-1_59.lib;libboost_thread-vc120-mt-1_59.lib;gflags.lib;libglog.lib;hdf5.lib;hdf5_hl.lib;hdf5_tools.lib;LevelDb.lib;lmdb.lib;libopenblas.dll.a;opencv_core2410.lib;opencv_highgui2410.lib;opencv_imgproc2410.lib;libprotobuf.lib;libcaffe.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../NugetPackages\boost_chrono-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_date_time-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_filesystem-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_python2.7-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_system-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_thread-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages/gflags.2.1.2.1/build/native\x64\v120\dynamic\Lib;../../../NugetPackages/glog.0.3.3.0/build/native\lib\x64\v120\$(Configuration)\dynamic;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native\lib\x64;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native\lib\x64\v120\$(Configuration);../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native\lib\x64;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/lib\x64;../../../NugetPackages/OpenCV.2.4.10/build/native/lib\x64\v120\$(Configuration);../../../NugetPackages/protobuf-v120.2.6.1/build/native\lib\x64\v120\$(Configuration);$(OutDir)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>./;../common;../../../NugetPackages/boost.1.59.0.0/lib/native/include;../../../NugetPackages/gflags.2.1.2.1/build/native/include;../../../NugetPackages/glog.0.3.3.0/build/native/include;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native/include;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native/include;../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native/include;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/include;../../../NugetPackages/OpenCV.2.4.10/build/native/include;../../../NugetPackages/protobuf-v120.2.6.1/build/native/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLOG_NO_ABBREVIATED_SEVERITIES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../../../NugetPackages\boost_chrono-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_date_time-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_filesystem-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_python2.7-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_system-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_thread-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages/gflags.2.1.2.1/build/native\x64\v120\dynamic\Lib;../../../NugetPackages/glog.0.3.3.0/build/native\lib\x64\v120\$(Configuration)\dynamic;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native\lib\x64;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native\lib\x64\v120\$(Configuration);../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native\lib\x64;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/lib\x64;../../../NugetPackages/OpenCV.2.4.10/build/native/lib\x64\v120\$(Configuration);../../../NugetPackages/protobuf-v120.2.6.1/build/native\lib\x64\v120\$(Configuration);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_chrono-vc120-mt-gd-1_59.lib;libboost_date_time-vc120-mt-gd-1_59.lib;libboost_filesystem-vc120-mt-gd-1_59.lib;libboost_python-vc120-mt-gd-1_59.lib;libboost_system-vc120-mt-gd-1_59.lib;libboost_thread-vc120-mt-gd-1_59.lib;gflags.lib;libglog.lib;hdf5.lib;hdf5_hl.lib;hdf5_tools.lib;LevelDb.lib;lmdbD.lib;libopenblas.dll.a;opencv_core2410d.lib;opencv_highgui2410d.lib;opencv_imgproc2410d.lib;libprotobuf.lib;libcaffe.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -194,6 +224,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AEye.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libcaffe\libcaffe.vcxproj">
+      <Project>{a9acef83-7b63-4574-a554-89ce869ea141}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -38,7 +38,7 @@ END_MESSAGE_MAP()
 CAEyeView::CAEyeView()
 {
 	// TODO:  在此处添加构造代码
-
+	setDefault();
 }
 
 CAEyeView::~CAEyeView()
@@ -134,9 +134,9 @@ void CAEyeView::OnFileOpen()
 {
 	// TODO:  在此添加命令处理程序代码
 	CFileDialog dlg(TRUE,
-		"HyperSectral File(*.bil)|*.bil", NULL,
+		"Jpeg(*.jpg)|*.jpg", NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		"HyperSectral File(*.bil)|*.bil||", this);
+		"Jpeg(*.jpg)|*.jpg||", this);
 	INT_PTR result = dlg.DoModal();
 	if (result == IDOK)
 	{
@@ -158,6 +158,8 @@ void CAEyeView::OnFileOpen()
 			os << std::fixed << std::setprecision(4) << p.second << " - \""
 				<< p.first << "\"" << std::endl;
 		}
+
+		outputInfo(os.str().c_str());
 	}
 
 }

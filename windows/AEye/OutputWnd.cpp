@@ -71,8 +71,8 @@ int COutputWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// 使用一些虚拟文本填写输出选项卡(无需复杂数据)
 	FillBuildWindow();
-	FillDebugWindow();
-	FillFindWindow();
+	//FillDebugWindow();
+	//FillFindWindow();
 
 	return 0;
 }
@@ -119,12 +119,20 @@ void COutputWnd::FillBuildWindow(std::string& msg)
 }
 
 #if 0
+void COutputWnd::FillBuildWindow(std::string& msg)
+{
+	m_wndOutputBuild.AddString((LPCTSTR)msg.c_str());
+
+	m_wndOutputBuild.SetCaretIndex(m_wndOutputBuild.GetCount());
+}
+
 void COutputWnd::FillFindWindow()
 {
 	m_wndOutputFind.AddString(_T("查找输出正显示在此处。"));
 	m_wndOutputFind.AddString(_T("输出正显示在列表视图的行中"));
 	m_wndOutputFind.AddString(_T("但您可以根据需要更改其显示方式..."));
 }
+#endif
 
 void COutputWnd::UpdateFonts()
 {
@@ -132,7 +140,7 @@ void COutputWnd::UpdateFonts()
 	m_wndOutputDebug.SetFont(&afxGlobalData.fontRegular);
 	m_wndOutputFind.SetFont(&afxGlobalData.fontRegular);
 }
-#endif
+
 
 /////////////////////////////////////////////////////////////////////////////
 // COutputList1

@@ -43,8 +43,8 @@ protected:
 
 protected:
 	void FillBuildWindow();
-	void FillDebugWindow();
-	void FillFindWindow();
+	//void FillDebugWindow();
+	//void FillFindWindow();
 
 	void AdjustHorzScroll(CListBox& wndListBox);
 
