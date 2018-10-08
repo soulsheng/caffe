@@ -527,7 +527,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_FILE_VIEW           "文件视图"
+    IDS_FILE_VIEW           "样本视图"
     IDS_CLASS_VIEW          "类视图"
     IDS_OUTPUT_WND          "输出"
     IDS_PROPERTIES_WND      "属性"
@@ -541,7 +541,7 @@ END
 
 STRINGTABLE
 BEGIN
-    IDS_BUILD_TAB           "生成"
+    IDS_BUILD_TAB           "日志"
     IDS_DEBUG_TAB           "调试"
     IDS_FIND_TAB            "查找"
 END

@@ -80,7 +80,7 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// 填入一些静态树视图数据(此处只需填入虚拟代码，而不是复杂的数据)
 	//FillFileView();
-	m_hRoot = m_wndFileView.InsertItem(_T("识别结果："), 0, 0);
+	m_hRoot = m_wndFileView.InsertItem(_T("样本列表："), 0, 0);
 	m_wndFileView.SetItemState(m_hRoot, TVIS_BOLD, TVIS_BOLD);
 
 	AdjustLayout();

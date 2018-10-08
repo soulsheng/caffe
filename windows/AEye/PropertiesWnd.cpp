@@ -163,6 +163,24 @@ void CPropertiesWnd::InitPropList()
 	m_wndPropList.SetVSDotNetLook();
 	m_wndPropList.MarkModifiedProperties();
 
+	CMFCPropertyGridProperty* pProp = NULL;
+
+	CMFCPropertyGridProperty* pGroup = NULL;
+
+	// 分组1 -  概率最高类别
+	pGroup = new CMFCPropertyGridProperty(_T("概率最高类别"));
+
+	// 类别1
+	pProp = new CMFCPropertyGridProperty(_T("概率最高类别名字"), COleVariant(_T("概率最高类别名字"), VT_BSTR), _T("识别概率最高的类别"), 0);
+	pGroup->AddSubItem(pProp);
+
+	pProp = new CMFCPropertyGridProperty(_T("概率最高类别概率"), COleVariant(0.0f), _T("概率值"), 0.0f);
+	pGroup->AddSubItem(pProp);
+
+	m_wndPropList.AddProperty(pGroup);
+
+
+#if 0
 	CMFCPropertyGridProperty* pGroup1 = new CMFCPropertyGridProperty(_T("外观"));
 
 	pGroup1->AddSubItem(new CMFCPropertyGridProperty(_T("三维外观"), (_variant_t) false, _T("指定窗口的字体不使用粗体，并且控件将使用三维边框")));
@@ -235,6 +253,8 @@ void CPropertiesWnd::InitPropList()
 
 	pGroup4->Expand(FALSE);
 	m_wndPropList.AddProperty(pGroup4);
+#endif
+
 }
 
 void CPropertiesWnd::OnSetFocus(CWnd* pOldWnd)
