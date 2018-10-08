@@ -265,6 +265,9 @@ void CAEyeView::OnOpenFileList()
 
 	getFilePathFromDialog(imagePath);
 
+	if (imagePath.empty())
+		return;
+
 	std::vector<std::string>		imageList;
 
 	getFileListFromPath(imagePath, imageList);
