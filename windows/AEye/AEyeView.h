@@ -46,6 +46,9 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnFileOpen();
+
+	void predict(string &file);
+
 	void	switchBilViewByName(std::string name);
 	void AddFileViewBranch(std::string fileNameShort);
 
@@ -67,6 +70,11 @@ protected:
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+	afx_msg void OnOpenFileList();
+
+	void getFilePathFromDialog(std::string &path);
+	void getFileListFromPath(std::string &path, std::vector<std::string> &list);
+
 };
 
 #ifndef _DEBUG  // AEyeView.cpp 中的调试版本

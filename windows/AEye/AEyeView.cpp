@@ -33,6 +33,7 @@ BEGIN_MESSAGE_MAP(CAEyeView, CView)
 	ON_COMMAND(ID_FILE_OPEN, &CAEyeView::OnFileOpen)
 	ON_WM_TIMER()
 	ON_WM_CREATE()
+	ON_COMMAND(ID_OPEN_FILE_LIST, &CAEyeView::OnOpenFileList)
 END_MESSAGE_MAP()
 
 // CAEyeView 构造/析构
@@ -159,32 +160,41 @@ void CAEyeView::OnFileOpen()
 
 		string file = fileName.GetBuffer();
 
-		std::ostringstream os;
+		predict(file);
 
-		os << "---------- Prediction for "
-			<< file << " ----------" << std::endl;
-
-		cv::Mat img = cv::imread(file, -1);
-		CHECK(!img.empty()) << "Unable to decode image " << file;
-
-		clock_t t = clock();
-		std::vector<Prediction> predictions = classifier.Classify(img);
-		os << "---------- cost "
-			<< clock()-t << " ms, " << std::endl;
-
-		for (size_t i = 0; i < predictions.size(); ++i) {
-			Prediction p = predictions[i];
-			os << std::fixed << std::setprecision(4) << p.second << " - \""
-				<< p.first << "\"" << std::endl;
-		}
-
-		image.Load(file.c_str());
-
-		outputInfo(os.str().c_str());
-
-		AddFileViewBranch(fileName.GetBuffer());
 	}
 
+}
+
+void CAEyeView::predict(string &file)
+{
+	std::ostringstream os;
+
+	os << "---------- Prediction for "
+		<< file << " ----------" << std::endl;
+
+	cv::Mat img = cv::imread(file, -1);
+	CHECK(!img.empty()) << "Unable to decode image " << file;
+
+	clock_t t = clock();
+	std::vector<Prediction> predictions = classifier.Classify(img);
+	os << "---------- cost "
+		<< clock() - t << " ms, " << std::endl;
+
+	for (size_t i = 0; i < predictions.size(); ++i) {
+		Prediction p = predictions[i];
+		os << std::fixed << std::setprecision(4) << p.second << " - \""
+			<< p.first << "\"" << std::endl;
+	}
+
+	if (!image.IsNull())
+		image.Destroy();
+
+	image.Load(file.c_str());
+
+	outputInfo(os.str().c_str());
+
+	AddFileViewBranch(file);
 }
 
 void CAEyeView::AddFileViewBranch(std::string fileNameShort)
@@ -196,6 +206,9 @@ void CAEyeView::AddFileViewBranch(std::string fileNameShort)
 
 void CAEyeView::switchBilViewByName(std::string name)
 {
+	if (!image.IsNull())
+		image.Destroy();
+
 	image.Load(name.c_str());
 }
 
@@ -242,4 +255,88 @@ int CAEyeView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	SetTimer(0, 30, NULL);	//定时显示，一个30毫秒触发一次的定时器，30帧/秒 
 
 	return 0;
+}
+
+
+void CAEyeView::OnOpenFileList()
+{
+	// TODO:  在此添加命令处理程序代码
+	std::string		imagePath;
+
+	getFilePathFromDialog(imagePath);
+
+	std::vector<std::string>		imageList;
+
+	getFileListFromPath(imagePath, imageList);
+
+	for (std::vector<std::string>::iterator i = imageList.begin(); i != imageList.end(); i++)
+	{
+		predict( imagePath + *i );
+	}
+}
+
+void CAEyeView::getFilePathFromDialog(std::string &path)
+{
+	BROWSEINFO bi;
+	char Buffer[MAX_PATH];
+
+	//初始化入口参数bi开始
+	bi.hwndOwner = NULL;
+	bi.pidlRoot = NULL;//初始化制定的root目录很不容易
+	bi.pszDisplayName = Buffer;//此参数如为NULL则不能显示对话框
+	bi.lpszTitle = "选择图片路径";
+	bi.ulFlags = BIF_EDITBOX;//带编辑框的风格
+	bi.lpfn = NULL;
+	bi.lParam = 0;
+	bi.iImage = IDR_MAINFRAME;
+	//初始化入口参数bi结束
+
+	std::string strMessage = path;
+	strMessage = path + "正在选择图片路径...";
+	outputInfo(strMessage.c_str());
+	LOG(INFO) << strMessage;
+
+	LPITEMIDLIST pIDList = SHBrowseForFolder(&bi);//调用显示选择对话框
+
+	if (pIDList)
+	{
+		SHGetPathFromIDList(pIDList, Buffer);
+
+		//取得文件夹路径到Buffer里
+		path = std::string(Buffer) + "\\";
+
+		outputInfo(path.c_str());
+		outputInfo("图片路径已选中");
+		LOG(INFO) << path << "图片路径已选中";
+	}
+
+
+	// free memory used   
+	IMalloc * imalloc = 0;
+	if (SUCCEEDED(SHGetMalloc(&imalloc)))
+	{
+		imalloc->Free(pIDList);
+		imalloc->Release();
+	}
+}
+
+void CAEyeView::getFileListFromPath(std::string &path, std::vector<std::string> &list)
+{
+	CString csDirPath = CString(path.c_str()) + "*.jpeg";
+	HANDLE file;
+	WIN32_FIND_DATA fileData;
+	char line[1024];
+	char fn[1000];
+	//mbstowcs(fn,csDirPath.GetBuffer(),999);
+	file = FindFirstFile(csDirPath.GetBuffer(), &fileData);
+	list.push_back(fileData.cFileName);
+	bool bState = false;
+	bState = FindNextFile(file, &fileData);
+	while (bState)
+	{
+		//wcstombs(line,(const char*)fileData.cFileName,259);
+		list.push_back(fileData.cFileName);
+		bState = FindNextFile(file, &fileData);
+	}
+
 }
