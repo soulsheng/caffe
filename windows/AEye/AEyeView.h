@@ -46,6 +46,8 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg void OnFileOpen();
+	void	switchBilViewByName(std::string name);
+	void AddFileViewBranch(std::string fileNameShort);
 
 protected:
 	void	setDefault();

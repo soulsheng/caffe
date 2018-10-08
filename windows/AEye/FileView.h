@@ -2,6 +2,7 @@
 #pragma once
 
 #include "ViewTree.h"
+#include <string>
 
 class CFileViewToolBar : public CMFCToolBar
 {
@@ -22,12 +23,16 @@ public:
 	void AdjustLayout();
 	void OnChangeVisualStyle();
 
+	void	AddBranch(std::string name);
+
 // Ьиад
 protected:
 
 	CViewTree m_wndFileView;
 	CImageList m_FileViewImages;
 	CFileViewToolBar m_wndToolBar;
+
+	HTREEITEM	m_hRoot;
 
 protected:
 	void FillFileView();

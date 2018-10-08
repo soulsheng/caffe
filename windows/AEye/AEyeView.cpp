@@ -166,7 +166,11 @@ void CAEyeView::OnFileOpen()
 
 		cv::Mat img = cv::imread(file, -1);
 		CHECK(!img.empty()) << "Unable to decode image " << file;
+
+		clock_t t = clock();
 		std::vector<Prediction> predictions = classifier.Classify(img);
+		os << "---------- cost "
+			<< clock()-t << " ms, " << std::endl;
 
 		for (size_t i = 0; i < predictions.size(); ++i) {
 			Prediction p = predictions[i];
@@ -177,8 +181,22 @@ void CAEyeView::OnFileOpen()
 		image.Load(file.c_str());
 
 		outputInfo(os.str().c_str());
+
+		AddFileViewBranch(fileName.GetBuffer());
 	}
 
+}
+
+void CAEyeView::AddFileViewBranch(std::string fileNameShort)
+{
+	// MainFrame
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->AddFileViewBranch(fileNameShort);
+}
+
+void CAEyeView::switchBilViewByName(std::string name)
+{
+	image.Load(name.c_str());
 }
 
 void CAEyeView::setDefault()

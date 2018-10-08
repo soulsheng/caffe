@@ -5,6 +5,9 @@
 #include "Resource.h"
 #include "AEye.h"
 
+#include "AEyeDoc.h"
+#include "AEyeView.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -76,7 +79,10 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_wndToolBar.SetRouteCommandsViaFrame(FALSE);
 
 	// 填入一些静态树视图数据(此处只需填入虚拟代码，而不是复杂的数据)
-	FillFileView();
+	//FillFileView();
+	m_hRoot = m_wndFileView.InsertItem(_T("识别结果："), 0, 0);
+	m_wndFileView.SetItemState(m_hRoot, TVIS_BOLD, TVIS_BOLD);
+
 	AdjustLayout();
 
 	return 0;
@@ -86,6 +92,12 @@ void CFileView::OnSize(UINT nType, int cx, int cy)
 {
 	CDockablePane::OnSize(nType, cx, cy);
 	AdjustLayout();
+}
+
+void CFileView::AddBranch(std::string name)
+{
+	m_wndFileView.InsertItem(name.c_str(), 2, 2, m_hRoot);
+	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
 }
 
 void CFileView::FillFileView()
@@ -177,6 +189,14 @@ void CFileView::OnProperties()
 void CFileView::OnFileOpen()
 {
 	// TODO:  在此处添加命令处理程序代码
+	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
+	CAEyeView* pView = (CAEyeView *)pFrame->GetActiveView();
+
+	CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndFileView;
+
+	std::string name = pWndTree->GetItemText(pWndTree->GetSelectedItem());
+
+	pView->switchBilViewByName(name);
 }
 
 void CFileView::OnFileOpenWith()
