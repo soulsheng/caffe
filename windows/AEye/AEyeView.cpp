@@ -244,7 +244,7 @@ void CAEyeView::outputInfo(const char* message, int value /*= -1*/)
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	OnDraw(this->GetDC());
+	OnDraw(NULL);
 
 	CView::OnTimer(nIDEvent);
 }
