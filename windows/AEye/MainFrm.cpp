@@ -415,3 +415,13 @@ void CMainFrame::OnSettingChange(UINT uFlags, LPCTSTR lpszSection)
 	CFrameWndEx::OnSettingChange(uFlags, lpszSection);
 	m_wndOutput.UpdateFonts();
 }
+
+void CMainFrame::updateProperty(int id, float value)
+{
+	m_wndProperties.updateProperty(id, value);
+}
+
+void CMainFrame::updateProperty(int id, std::string& value)
+{
+	m_wndProperties.updateProperty(id, value);
+}

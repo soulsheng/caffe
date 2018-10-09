@@ -167,6 +167,7 @@
     <ClInclude Include="AEyeDoc.h" />
     <ClInclude Include="AEyeView.h" />
     <ClInclude Include="ClassView.h" />
+    <ClInclude Include="commonDefinition.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="OutputWnd.h" />

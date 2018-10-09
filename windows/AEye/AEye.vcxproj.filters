@@ -60,6 +60,9 @@
     <ClInclude Include="..\common\Classifier.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="commonDefinition.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AEye.cpp">

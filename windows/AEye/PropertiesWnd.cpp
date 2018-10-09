@@ -6,6 +6,8 @@
 #include "MainFrm.h"
 #include "AEye.h"
 
+#include "commonDefinition.h"
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -167,14 +169,28 @@ void CPropertiesWnd::InitPropList()
 
 	CMFCPropertyGridProperty* pGroup = NULL;
 
-	// 分组1 -  概率最高类别
-	pGroup = new CMFCPropertyGridProperty(_T("概率最高类别"));
+	// 分组1 -  识别类别与概率
+	pGroup = new CMFCPropertyGridProperty(_T("识别类别与概率，从高到低"));
 
 	// 类别1
-	pProp = new CMFCPropertyGridProperty(_T("概率最高类别名字"), COleVariant(_T("概率最高类别名字"), VT_BSTR), _T("识别概率最高的类别"), 0);
+	pProp = new CMFCPropertyGridProperty(_T("类别1名字"), COleVariant("概率最高类别名字"), _T("识别概率最高的类别"), ID_PROPERTY_CLASS1_NAME);
 	pGroup->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty(_T("概率最高类别概率"), COleVariant(0.0f), _T("概率值"), 0.0f);
+	pProp = new CMFCPropertyGridProperty(_T("类别1概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS1_RATIO);
+	pGroup->AddSubItem(pProp);
+
+	// 类别2
+	pProp = new CMFCPropertyGridProperty(_T("类别2名字"), COleVariant("概率第二类别名字"), _T("识别概率第二的类别"), ID_PROPERTY_CLASS2_NAME);
+	pGroup->AddSubItem(pProp);
+
+	pProp = new CMFCPropertyGridProperty(_T("类别2概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS2_RATIO);
+	pGroup->AddSubItem(pProp);
+
+	// 类别3
+	pProp = new CMFCPropertyGridProperty(_T("类别3名字"), COleVariant("概率第三类别名字"), _T("识别概率第三的类别"), ID_PROPERTY_CLASS3_NAME);
+	pGroup->AddSubItem(pProp);
+
+	pProp = new CMFCPropertyGridProperty(_T("类别3概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS3_RATIO);
 	pGroup->AddSubItem(pProp);
 
 	m_wndPropList.AddProperty(pGroup);
@@ -289,4 +305,22 @@ void CPropertiesWnd::SetPropListFont()
 
 	m_wndPropList.SetFont(&m_fntPropList);
 	m_wndObjectCombo.SetFont(&m_fntPropList);
+}
+
+void CPropertiesWnd::updateProperty(int id, float value)
+{
+	CMFCPropertyGridProperty* pProp = m_wndPropList.FindItemByData(id);
+	if (pProp)
+	{
+		pProp->SetValue(COleVariant(value));
+	}
+}
+
+void CPropertiesWnd::updateProperty(int id, std::string& value)
+{
+	CMFCPropertyGridProperty* pProp = m_wndPropList.FindItemByData(id);
+	if (pProp)
+	{
+		pProp->SetValue(COleVariant(value.c_str()));
+	}
 }

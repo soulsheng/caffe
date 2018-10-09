@@ -61,6 +61,9 @@ public:
 	void	FillBuildWindow(std::string& msg);
 	void	AddFileViewBranch(std::string name);
 
+	void updateProperty(int id, float value);
+	void updateProperty(int id, std::string& value);
+
 };
 
 

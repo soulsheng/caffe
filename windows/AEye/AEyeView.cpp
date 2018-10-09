@@ -17,6 +17,8 @@
 #define new DEBUG_NEW
 #endif
 
+#include "commonDefinition.h"
+
 #include <sstream>
 
 // CAEyeView
@@ -181,10 +183,15 @@ void CAEyeView::predict(string &file)
 	os << "---------- cost "
 		<< clock() - t << " ms, " << std::endl;
 
+	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
+
 	for (size_t i = 0; i < predictions.size(); ++i) {
 		Prediction p = predictions[i];
 		os << std::fixed << std::setprecision(4) << p.second << " - \""
 			<< p.first << "\"" << std::endl;
+
+		pFrame->updateProperty(i * 2 + 1, p.first);
+		pFrame->updateProperty(i * 2 + 2, p.second);
 	}
 
 	if (!image.IsNull())
@@ -206,10 +213,7 @@ void CAEyeView::AddFileViewBranch(std::string fileNameShort)
 
 void CAEyeView::switchBilViewByName(std::string name)
 {
-	if (!image.IsNull())
-		image.Destroy();
-
-	image.Load(name.c_str());
+	predict(name);
 }
 
 void CAEyeView::setDefault()

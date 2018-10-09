@@ -38,6 +38,9 @@ protected:
 public:
 	virtual ~CPropertiesWnd();
 
+	void updateProperty(int id, float value);
+	void updateProperty(int id, std::string& value);
+
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
