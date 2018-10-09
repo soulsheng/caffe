@@ -63,7 +63,7 @@ protected:
 	string model_file = "G:\\file\\code\\dnn\\caffe\\models\\bvlc_reference_caffenet\\deploy.prototxt";
 	string trained_file = "G:\\file\\code\\dnn\\caffe\\models\\bvlc_reference_caffenet\\bvlc_reference_caffenet.caffemodel";
 	string mean_file = "../../data/ilsvrc12/imagenet_mean.binaryproto";
-	string label_file = "../../data/ilsvrc12/synset_words.txt";
+	string label_file = "../../data/ilsvrc12/synset_words_cn.txt";
 
 	CImage image;
 
