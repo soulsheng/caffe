@@ -180,17 +180,31 @@ void CPropertiesWnd::InitPropList()
 	pGroup->AddSubItem(pProp);
 
 	// 类别2
-	pProp = new CMFCPropertyGridProperty(_T("类别2名字"), COleVariant("概率第二类别名字"), _T("识别概率第二的类别"), ID_PROPERTY_CLASS2_NAME);
+	pProp = new CMFCPropertyGridProperty(_T("类别2名字"), COleVariant("概率第2类别名字"), _T("识别概率第2的类别"), ID_PROPERTY_CLASS2_NAME);
 	pGroup->AddSubItem(pProp);
 
 	pProp = new CMFCPropertyGridProperty(_T("类别2概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS2_RATIO);
 	pGroup->AddSubItem(pProp);
 
 	// 类别3
-	pProp = new CMFCPropertyGridProperty(_T("类别3名字"), COleVariant("概率第三类别名字"), _T("识别概率第三的类别"), ID_PROPERTY_CLASS3_NAME);
+	pProp = new CMFCPropertyGridProperty(_T("类别3名字"), COleVariant("概率第3类别名字"), _T("识别概率第3的类别"), ID_PROPERTY_CLASS3_NAME);
 	pGroup->AddSubItem(pProp);
 
 	pProp = new CMFCPropertyGridProperty(_T("类别3概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS3_RATIO);
+	pGroup->AddSubItem(pProp);
+
+	// 类别4
+	pProp = new CMFCPropertyGridProperty(_T("类别4名字"), COleVariant("概率第4类别名字"), _T("识别概率第4的类别"), ID_PROPERTY_CLASS4_NAME);
+	pGroup->AddSubItem(pProp);
+
+	pProp = new CMFCPropertyGridProperty(_T("类别4概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS4_RATIO);
+	pGroup->AddSubItem(pProp);
+
+	// 类别5
+	pProp = new CMFCPropertyGridProperty(_T("类别5名字"), COleVariant("概率第5类别名字"), _T("识别概率第5的类别"), ID_PROPERTY_CLASS5_NAME);
+	pGroup->AddSubItem(pProp);
+
+	pProp = new CMFCPropertyGridProperty(_T("类别5概率"), COleVariant(0.0f), _T("概率值"), ID_PROPERTY_CLASS5_RATIO);
 	pGroup->AddSubItem(pProp);
 
 	m_wndPropList.AddProperty(pGroup);
