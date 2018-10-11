@@ -79,6 +79,11 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 	::SetBrushOrgEx(hDC, 0, 0, NULL);
 
 	image.Draw(hDC, rect);
+
+	pDC->SetBkMode(TRANSPARENT); //设置背景为透明！
+	pDC->SetTextColor(RGB(255, 69, 0)); // 字体橙色
+	pDC->TextOut(rect.Width()*2/3, rect.Height()*1/9, m_currentClassNamePredict.c_str());
+
 	ReleaseDC(pDC);//释放picture控件的DC
 }
 
@@ -256,6 +261,8 @@ void CAEyeView::updateUI(string &file, std::vector<Prediction> &predictions, int
 			image.Destroy();
 
 		image.Load(file.c_str());
+
+		m_currentClassNamePredict = predictions[0].first;
 	}
 
 	if (type & LOG_TYPE_UI_OUTPUT)
