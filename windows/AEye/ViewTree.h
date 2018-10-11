@@ -17,6 +17,7 @@ protected:
 // й╣ож
 public:
 	virtual ~CViewTree();
+	afx_msg void OnSelChanged(NMHDR* pNMHDR, LRESULT* pResult);
 
 protected:
 	DECLARE_MESSAGE_MAP()
