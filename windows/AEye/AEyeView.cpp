@@ -17,7 +17,6 @@
 #define new DEBUG_NEW
 #endif
 
-#include "commonDefinition.h"
 
 #include <sstream>
 
@@ -162,46 +161,27 @@ void CAEyeView::OnFileOpen()
 
 		string file = fileName.GetBuffer();
 
-		predict(file);
+		int msTime = 0;
+		std::vector<Prediction> result;
+		predict(file, result, msTime);
 
+		m_PredictionResultList.insert( PredictionResultPair(file, result) );
+
+		updateUI(file, result, msTime);
 	}
 
 }
 
-void CAEyeView::predict(string &file)
+void CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int &msTime)
 {
-	std::ostringstream os;
-
-	os << "---------- Prediction for "
-		<< file << " ----------" << std::endl;
 
 	cv::Mat img = cv::imread(file, -1);
 	CHECK(!img.empty()) << "Unable to decode image " << file;
 
 	clock_t t = clock();
-	std::vector<Prediction> predictions = classifier.Classify(img);
-	os << "---------- cost "
-		<< clock() - t << " ms, " << std::endl;
-
-	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
-
-	for (size_t i = 0; i < predictions.size(); ++i) {
-		Prediction p = predictions[i];
-		os << std::fixed << std::setprecision(4) << p.second << " - \""
-			<< p.first << "\"" << std::endl;
-
-		pFrame->updateProperty(i * 2 + 1, p.first);
-		pFrame->updateProperty(i * 2 + 2, p.second);
-	}
-
-	if (!image.IsNull())
-		image.Destroy();
-
-	image.Load(file.c_str());
-
-	outputInfo(os.str().c_str());
-
-	AddFileViewBranch(file);
+	predictions = classifier.Classify(img);
+	
+	msTime = clock() - t;
 }
 
 void CAEyeView::AddFileViewBranch(std::string fileNameShort)
@@ -213,7 +193,12 @@ void CAEyeView::AddFileViewBranch(std::string fileNameShort)
 
 void CAEyeView::switchBilViewByName(std::string name)
 {
-	predict(name);
+	//predict(name);
+	std::vector<Prediction> result = m_PredictionResultList[name];
+
+	int msTime = 0;
+	updateUI(name, result, msTime, LOG_TYPE_UI_PROPERTY | LOG_TYPE_UI_VIEW);
+
 }
 
 void CAEyeView::setDefault()
@@ -240,6 +225,45 @@ void CAEyeView::outputInfo(const char* message, int value /*= -1*/)
 	pMFram->FillBuildWindow(os.str());
 }
 
+
+void CAEyeView::updateUI(string &file, std::vector<Prediction> &predictions, int msTime, int type)
+{
+	std::ostringstream os;
+
+	os << "---------- Prediction for "
+		<< file << " ----------" << std::endl;
+
+	os << "---------- cost "
+		<< msTime << " ms, " << std::endl;
+
+	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
+
+	for (size_t i = 0; i < predictions.size(); ++i) {
+		Prediction p = predictions[i];
+		os << std::fixed << std::setprecision(4) << p.second << " - \""
+			<< p.first << "\"" << std::endl;
+
+		if (type & LOG_TYPE_UI_PROPERTY)
+		{
+			pFrame->updateProperty(i * 2 + 1, p.first);
+			pFrame->updateProperty(i * 2 + 2, p.second);
+		}
+	}
+
+	if (type & LOG_TYPE_UI_VIEW)
+	{
+		if (!image.IsNull())
+			image.Destroy();
+
+		image.Load(file.c_str());
+	}
+
+	if (type & LOG_TYPE_UI_OUTPUT)
+		outputInfo(os.str().c_str());
+
+	if (type & LOG_TYPE_UI_FILE)
+		AddFileViewBranch(file);
+}
 
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)
 {
@@ -276,10 +300,19 @@ void CAEyeView::OnOpenFileList()
 
 	getFileListFromPath(imagePath, imageList);
 
+	int msTime = 0;
+	std::vector<Prediction> result;
+
 	for (std::vector<std::string>::iterator i = imageList.begin(); i != imageList.end(); i++)
 	{
-		predict( imagePath + *i );
+		predict(imagePath + *i, result, msTime);
+
+		m_PredictionResultList.insert(PredictionResultPair(imagePath + *i, result));
+
+		updateUI(imagePath + *i, result, msTime);
 	}
+
+	//updateUI( *( imageList.end()-1), result, msTime);
 }
 
 void CAEyeView::getFilePathFromDialog(std::string &path)
