@@ -120,6 +120,14 @@ void CFileView::AddBranch(ClassTop1Map& names)
 	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
 }
 
+void CFileView::AddBranch(FilesMap& names)
+{
+	for (FilesMap::iterator itr = names.begin(); itr != names.end(); itr++)
+		m_wndFileView.InsertItem(itr->first.c_str(), 2, 2, m_hRoot);
+
+	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
+}
+
 void CFileView::FillFileView()
 {
 	HTREEITEM hRoot = m_wndFileView.InsertItem(_T("FakeApp нд╪Ч"), 0, 0);

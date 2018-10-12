@@ -62,6 +62,7 @@ public:
 	void AddFileViewBranch(std::string fileNameShort);
 
 	void AddFileViewBranch(ClassTop1Map& names);
+	void AddFileViewBranch(FilesMap& names);
 
 	void	sortPredictionResult();
 

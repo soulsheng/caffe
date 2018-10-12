@@ -26,6 +26,7 @@ public:
 
 	void	AddBranch(std::string name);
 	void	AddBranch(ClassTop1Map& names);
+	void	AddBranch(FilesMap& names);
 
 // Ьиад
 protected:

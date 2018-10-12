@@ -212,8 +212,16 @@ void CAEyeView::AddFileViewBranch(ClassTop1Map& names)
 	pMain->AddFileViewBranch(names);
 }
 
+void CAEyeView::AddFileViewBranch(FilesMap& names)
+{
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->AddFileViewBranch(names);
+}
+
 void CAEyeView::sortPredictionResult()
 {
+	clock_t msTimeAll = clock();
+
 	for (PredictionResultMap::iterator itrPRM = m_PredictionResultList.begin();
 		itrPRM != m_PredictionResultList.end(); itrPRM++)
 	{
@@ -237,7 +245,24 @@ void CAEyeView::sortPredictionResult()
 		}
 	}
 
+	std::ostringstream os;
+
+	os << "---------- cost "
+		<< clock() - msTimeAll << " ms for sorting "
+		<< std::endl;
+
+	outputInfo(os.str().c_str());
+
+	msTimeAll = clock();
+	os.str("");
+
 	AddFileViewBranch(m_ClassTop1Map);
+
+	os << "---------- cost "
+		<< clock() - msTimeAll << " ms for update ui "
+		<< std::endl;
+
+	outputInfo(os.str().c_str());
 }
 
 void CAEyeView::switchBilViewByName(std::string name)
@@ -359,6 +384,8 @@ void CAEyeView::OnOpenFileList()
 	int msTime = 0;
 	std::vector<Prediction> result;
 
+	clock_t msTimeAll = clock();
+
 	for (std::vector<std::string>::iterator i = imageList.begin(); i != imageList.end(); i++)
 	{
 		string file = imagePath + *i;
@@ -368,10 +395,29 @@ void CAEyeView::OnOpenFileList()
 
 		cachePredictionResult(shortname, result, file);
 
-		updateUI(shortname, file, result, msTime);
+		//updateUI(shortname, file, result, msTime);
 	}
 
+	std::ostringstream os;
+	os << "---------- cost "
+		<< clock() - msTimeAll << " ms for predicting "
+		<< imageList.size() << " images. " << std::endl;
+
+	outputInfo(os.str().c_str());
+
+	msTimeAll = clock();
+	os.str("");
+
 	//updateUI( *( imageList.end()-1), result, msTime);
+	AddFileViewBranch(m_FilesMap);
+
+	os << "---------- cost "
+		<< clock() - msTimeAll << " ms for update ui "
+		<< std::endl;
+
+	outputInfo(os.str().c_str());
+
+
 }
 
 void CAEyeView::getFilePathFromDialog(std::string &path)
