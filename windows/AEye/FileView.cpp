@@ -29,10 +29,10 @@ BEGIN_MESSAGE_MAP(CFileView, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
 	ON_WM_CONTEXTMENU()
-	ON_COMMAND(ID_PROPERTIES, OnProperties)
+	ON_COMMAND(ID_COLLAPES_ALL, OnCollapseAll)
 	ON_COMMAND(ID_OPEN, OnFileOpen)
 	ON_COMMAND(ID_OPEN_WITH, OnFileOpenWith)
-	ON_COMMAND(ID_DUMMY_COMPILE, OnDummyCompile)
+	ON_COMMAND(ID_EXPAND_ALL_File, OnExpandAll)
 	ON_COMMAND(ID_EDIT_CUT, OnEditCut)
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
 	ON_COMMAND(ID_EDIT_CLEAR, OnEditClear)
@@ -200,23 +200,17 @@ void CFileView::AdjustLayout()
 	m_wndFileView.SetWindowPos(NULL, rectClient.left + 1, rectClient.top + cyTlb + 1, rectClient.Width() - 2, rectClient.Height() - cyTlb - 2, SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-void CFileView::OnProperties()
+void CFileView::OnCollapseAll()
 {
-	AfxMessageBox(_T("属性...."));
+	m_wndFileView.Expand(m_hRoot, TVE_COLLAPSE);
 
 }
 
 void CFileView::OnFileOpen()
 {
 	// TODO:  在此处添加命令处理程序代码
-	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
-	CAEyeView* pView = (CAEyeView *)pFrame->GetActiveView();
+	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
 
-	CTreeCtrl* pWndTree = (CTreeCtrl*)&m_wndFileView;
-
-	std::string name = pWndTree->GetItemText(pWndTree->GetSelectedItem());
-
-	pView->switchBilViewByName(name);
 }
 
 void CFileView::OnFileOpenWith()
@@ -228,9 +222,22 @@ void CFileView::OnFileOpenWith()
 	pView->sortPredictionResult();
 }
 
-void CFileView::OnDummyCompile()
+void CFileView::OnExpandAll()
 {
 	// TODO:  在此处添加命令处理程序代码
+	HTREEITEM hChild = m_wndFileView.GetChildItem(m_hRoot);
+
+	if (hChild == NULL)
+		return;
+
+	do
+	{
+		m_wndFileView.Expand(hChild, TVE_EXPAND);
+
+		hChild = m_wndFileView.GetNextSiblingItem(hChild);	//兄弟节点使用循环，较清晰
+
+	} while (hChild);
+
 }
 
 void CFileView::OnEditCut()

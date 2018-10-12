@@ -18,10 +18,10 @@
 #define ID_WINDOW_MANAGER               131
 #define ID_VIEW_FILEVIEW                133
 #define ID_VIEW_CLASSVIEW               134
-#define ID_PROPERTIES                   135
+#define ID_COLLAPES_ALL                   135
 #define ID_OPEN                         136
 #define ID_OPEN_WITH                    137
-#define ID_DUMMY_COMPILE                138
+#define ID_EXPAND_ALL_File                138
 #define ID_CLASS_ADD_MEMBER_FUNCTION    139
 #define ID_CLASS_ADD_MEMBER_VARIABLE    140
 #define ID_CLASS_DEFINITION             141

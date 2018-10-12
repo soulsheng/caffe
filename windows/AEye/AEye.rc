@@ -144,7 +144,7 @@ END
 
 IDR_EXPLORER TOOLBAR 16, 15
 BEGIN
-    BUTTON      ID_PROPERTIES
+BUTTON      ID_COLLAPES_ALL
 END
 
 IDR_MENU_IMAGES TOOLBAR 16, 15
@@ -184,21 +184,8 @@ BEGIN
         MENUITEM "保存(&S)\tCtrl+S",              ID_FILE_SAVE
         MENUITEM "另存为(&A)...",                  ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
-        MENUITEM "打印(&P)...\tCtrl+P",           ID_FILE_PRINT
-        MENUITEM "打印预览(&V)",                    ID_FILE_PRINT_PREVIEW
-        MENUITEM "打印设置(&R)...",                 ID_FILE_PRINT_SETUP
-        MENUITEM SEPARATOR
-        MENUITEM "最近的文件",                       ID_FILE_MRU_FILE1, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)",                      ID_APP_EXIT
-    END
-    POPUP "编辑(&E)"
-    BEGIN
-        MENUITEM "撤消(&U)\tCtrl+Z",              ID_EDIT_UNDO
-        MENUITEM SEPARATOR
-        MENUITEM "剪切(&T)\tCtrl+X",              ID_EDIT_CUT
-        MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
-        MENUITEM "粘贴(&P)\tCtrl+V",              ID_EDIT_PASTE
     END
     POPUP "视图(&V)"
     BEGIN
@@ -255,16 +242,11 @@ IDR_POPUP_EXPLORER MENU
 BEGIN
     POPUP "资源管理器"
     BEGIN
-        MENUITEM "Top5类别与概率(&O)",                      ID_OPEN
         MENUITEM "分类排序(&W)....",                ID_OPEN_WITH
         MENUITEM SEPARATOR
-        MENUITEM "编译(&C)",                      ID_DUMMY_COMPILE
-        MENUITEM SEPARATOR
-        MENUITEM "剪切(&T)\tCtrl+X",              ID_EDIT_CUT
-        MENUITEM "复制(&C)\tCtrl+C",              ID_EDIT_COPY
-        MENUITEM "移除(&R)",                      ID_EDIT_CLEAR
-        MENUITEM SEPARATOR
-        MENUITEM "属性(&P)...",                   ID_PROPERTIES
+        MENUITEM "一级全部展开(&O)",                      ID_OPEN
+        MENUITEM "二级全部展开(&E)",                      ID_EXPAND_ALL_File
+        MENUITEM "全部收起(&C)...",                   ID_COLLAPES_ALL
     END
 END
 
