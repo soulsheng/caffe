@@ -10,8 +10,8 @@
 typedef std::pair<std::string, std::vector<Prediction>>	PredictionResultPair;
 typedef std::map<std::string, std::vector<Prediction>>	PredictionResultMap;
 
-typedef std::pair<std::string, std::string>	FilesPair;
-typedef std::map<std::string, std::string>	FilesMap;
+
+
 
 class CAEyeView : public CView
 {
@@ -54,10 +54,16 @@ protected:
 public:
 	afx_msg void OnFileOpen();
 
+	void cachePredictionResult(string shortname, std::vector<Prediction> result, string file);
+
 	void predict(string &file, std::vector<Prediction> &predictions, int &msTime);
 
 	void	switchBilViewByName(std::string name);
 	void AddFileViewBranch(std::string fileNameShort);
+
+	void AddFileViewBranch(ClassTop1Map& names);
+
+	void	sortPredictionResult();
 
 protected:
 	void	setDefault();
@@ -71,6 +77,8 @@ protected:
 
 	PredictionResultMap	m_PredictionResultList;
 	FilesMap			m_FilesMap;
+
+	ClassTop1Map		m_ClassTop1Map;
 
 	string m_currentClassNamePredict;
 

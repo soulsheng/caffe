@@ -8,6 +8,8 @@
 #include "OutputWnd.h"
 #include "PropertiesWnd.h"
 
+#include "commonDefinition.h"
+
 class CMainFrame : public CFrameWndEx
 {
 	
@@ -60,6 +62,7 @@ protected:
 public:
 	void	FillBuildWindow(std::string& msg);
 	void	AddFileViewBranch(std::string name);
+	void	AddFileViewBranch(ClassTop1Map& names);
 
 	void updateProperty(int id, float value);
 	void updateProperty(int id, std::string& value);

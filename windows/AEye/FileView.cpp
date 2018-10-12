@@ -100,6 +100,26 @@ void CFileView::AddBranch(std::string name)
 	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
 }
 
+void CFileView::AddBranch(ClassTop1Map& names)
+{
+	m_wndFileView.DeleteAllItems();
+
+	m_hRoot = m_wndFileView.InsertItem(_T("样本列表："), 0, 0);
+	m_wndFileView.SetItemState(m_hRoot, TVIS_BOLD, TVIS_BOLD);
+
+	for (ClassTop1Map::iterator itrCTM = names.begin(); itrCTM != names.end(); itrCTM++)
+	{
+		HTREEITEM hRootSub = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRoot);
+
+		Top1Map		&top1Map = itrCTM->second;
+		for (Top1Map::iterator itr = top1Map.begin(); itr != top1Map.end(); itr++)
+			m_wndFileView.InsertItem(itr->second.c_str(), 2, 2, hRootSub);
+
+	}
+
+	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
+}
+
 void CFileView::FillFileView()
 {
 	HTREEITEM hRoot = m_wndFileView.InsertItem(_T("FakeApp 文件"), 0, 0);
@@ -202,6 +222,10 @@ void CFileView::OnFileOpen()
 void CFileView::OnFileOpenWith()
 {
 	// TODO:  在此处添加命令处理程序代码
+	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
+	CAEyeView* pView = (CAEyeView *)pFrame->GetActiveView();
+
+	pView->sortPredictionResult();
 }
 
 void CFileView::OnDummyCompile()

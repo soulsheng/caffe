@@ -1,5 +1,18 @@
 #pragma once
 
+#include <functional>
+#include <string>
+#include <vector>
+#include <map>
+
+typedef std::pair<std::string, std::string>	FilesPair;
+typedef std::map<std::string, std::string>	FilesMap;
+
+typedef std::pair<float, std::string>	Top1Pair;
+typedef std::map<float, std::string, std::greater<float> >	Top1Map;
+
+typedef std::pair<std::string, Top1Map>	ClassTop1Pair;
+typedef std::map<std::string, Top1Map>	ClassTop1Map;
 
 enum ID_PROPERTY_DATA
 {

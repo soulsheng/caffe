@@ -255,8 +255,8 @@ IDR_POPUP_EXPLORER MENU
 BEGIN
     POPUP "资源管理器"
     BEGIN
-        MENUITEM "打开(&O)",                      ID_OPEN
-        MENUITEM "打开方式(&W)....",                ID_OPEN_WITH
+        MENUITEM "Top5类别与概率(&O)",                      ID_OPEN
+        MENUITEM "分类排序(&W)....",                ID_OPEN_WITH
         MENUITEM SEPARATOR
         MENUITEM "编译(&C)",                      ID_DUMMY_COMPILE
         MENUITEM SEPARATOR

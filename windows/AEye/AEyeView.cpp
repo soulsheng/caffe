@@ -173,13 +173,18 @@ void CAEyeView::OnFileOpen()
 		std::vector<Prediction> result;
 		predict(file, result, msTime);
 
-		m_PredictionResultList.insert(PredictionResultPair(shortname, result));
-
-		m_FilesMap.insert(FilesPair(shortname, file));
+		cachePredictionResult(shortname, result, file);
 
 		updateUI(shortname, file, result, msTime);
 	}
 
+}
+
+void CAEyeView::cachePredictionResult(string shortname, std::vector<Prediction> result, string file)
+{
+	m_PredictionResultList.insert(PredictionResultPair(shortname, result));
+
+	m_FilesMap.insert(FilesPair(shortname, file));
 }
 
 void CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int &msTime)
@@ -201,10 +206,47 @@ void CAEyeView::AddFileViewBranch(std::string fileNameShort)
 	pMain->AddFileViewBranch(fileNameShort);
 }
 
+void CAEyeView::AddFileViewBranch(ClassTop1Map& names)
+{
+	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
+	pMain->AddFileViewBranch(names);
+}
+
+void CAEyeView::sortPredictionResult()
+{
+	for (PredictionResultMap::iterator itrPRM = m_PredictionResultList.begin();
+		itrPRM != m_PredictionResultList.end(); itrPRM++)
+	{
+
+		Prediction& top1 = (itrPRM->second)[0];
+
+		ClassTop1Map::iterator itr = m_ClassTop1Map.find(top1.first);
+
+		if (m_ClassTop1Map.end() == itr)
+		{// not find, add new class
+			Top1Map		top1Map;
+			top1Map.insert(Top1Pair(top1.second, itrPRM->first));
+
+			m_ClassTop1Map.insert(ClassTop1Pair(top1.first, top1Map));
+		}
+		else
+		{// add to existing
+			Top1Map		&top1Map = itr->second;
+
+			top1Map.insert(Top1Pair(top1.second, itrPRM->first));
+		}
+	}
+
+	AddFileViewBranch(m_ClassTop1Map);
+}
+
 void CAEyeView::switchBilViewByName(std::string name)
 {
 	//predict(name);
 	std::string fullname = m_FilesMap[name];
+
+	if (fullname.empty())
+		return;
 
 	std::vector<Prediction> result = m_PredictionResultList[name];
 
@@ -324,9 +366,7 @@ void CAEyeView::OnOpenFileList()
 
 		predict(file, result, msTime);
 
-		m_PredictionResultList.insert(PredictionResultPair(shortname, result));
-
-		m_FilesMap.insert(FilesPair(shortname, file));
+		cachePredictionResult(shortname, result, file);
 
 		updateUI(shortname, file, result, msTime);
 	}

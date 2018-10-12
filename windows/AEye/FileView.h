@@ -3,6 +3,7 @@
 
 #include "ViewTree.h"
 #include <string>
+#include "commonDefinition.h"
 
 class CFileViewToolBar : public CMFCToolBar
 {
@@ -24,6 +25,7 @@ public:
 	void OnChangeVisualStyle();
 
 	void	AddBranch(std::string name);
+	void	AddBranch(ClassTop1Map& names);
 
 // Ьиад
 protected:

@@ -260,6 +260,11 @@ void CMainFrame::AddFileViewBranch(std::string name)
 	m_wndFileView.AddBranch(name);
 }
 
+void CMainFrame::AddFileViewBranch(ClassTop1Map& names)
+{
+	m_wndFileView.AddBranch(names);
+}
+
 // CMainFrame ’Ô∂œ
 
 #ifdef _DEBUG
