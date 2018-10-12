@@ -8,8 +8,10 @@
 #include "commonDefinition.h"
 
 typedef std::pair<std::string, std::vector<Prediction>>	PredictionResultPair;
-typedef std::vector<PredictionResultPair>	PredictionResultList;
 typedef std::map<std::string, std::vector<Prediction>>	PredictionResultMap;
+
+typedef std::pair<std::string, std::string>	FilesPair;
+typedef std::map<std::string, std::string>	FilesMap;
 
 class CAEyeView : public CView
 {
@@ -62,12 +64,13 @@ protected:
 	void	release();
 	void	outputInfo(const char* message, int value = -1);	// print to output window or status bar
 
-	void	updateUI(string &file, std::vector<Prediction> &predictions, int msTime, int type = LOG_TYPE_UI_ALL);
+	void	updateUI(string &shortname, string &file, std::vector<Prediction> &predictions, int msTime, int type = LOG_TYPE_UI_ALL);
 
 protected:
 	Classifier classifier;
 
 	PredictionResultMap	m_PredictionResultList;
+	FilesMap			m_FilesMap;
 
 	string m_currentClassNamePredict;
 

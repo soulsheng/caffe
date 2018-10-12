@@ -63,6 +63,9 @@
     <ClInclude Include="commonDefinition.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\Utility.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AEye.cpp">
@@ -96,6 +99,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\common\Classifier.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\Utility.cpp">
       <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>

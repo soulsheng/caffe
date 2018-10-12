@@ -13,6 +13,8 @@
 #include "AEyeView.h"
 #include "MainFrm.h"
 
+#include "Utility.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -165,14 +167,17 @@ void CAEyeView::OnFileOpen()
 		CString fileName = dlg.GetPathName();
 
 		string file = fileName.GetBuffer();
+		string shortname = UtilityFile::getShortFileName(file);
 
 		int msTime = 0;
 		std::vector<Prediction> result;
 		predict(file, result, msTime);
 
-		m_PredictionResultList.insert( PredictionResultPair(file, result) );
+		m_PredictionResultList.insert(PredictionResultPair(shortname, result));
 
-		updateUI(file, result, msTime);
+		m_FilesMap.insert(FilesPair(shortname, file));
+
+		updateUI(shortname, file, result, msTime);
 	}
 
 }
@@ -199,10 +204,12 @@ void CAEyeView::AddFileViewBranch(std::string fileNameShort)
 void CAEyeView::switchBilViewByName(std::string name)
 {
 	//predict(name);
+	std::string fullname = m_FilesMap[name];
+
 	std::vector<Prediction> result = m_PredictionResultList[name];
 
 	int msTime = 0;
-	updateUI(name, result, msTime, LOG_TYPE_UI_PROPERTY | LOG_TYPE_UI_VIEW);
+	updateUI(name, fullname, result, msTime, LOG_TYPE_UI_PROPERTY | LOG_TYPE_UI_VIEW);
 
 }
 
@@ -231,12 +238,12 @@ void CAEyeView::outputInfo(const char* message, int value /*= -1*/)
 }
 
 
-void CAEyeView::updateUI(string &file, std::vector<Prediction> &predictions, int msTime, int type)
+void CAEyeView::updateUI(string &shortname, string &file, std::vector<Prediction> &predictions, int msTime, int type)
 {
 	std::ostringstream os;
 
 	os << "---------- Prediction for "
-		<< file << " ----------" << std::endl;
+		<< shortname << " ----------" << std::endl;
 
 	os << "---------- cost "
 		<< msTime << " ms, " << std::endl;
@@ -269,7 +276,7 @@ void CAEyeView::updateUI(string &file, std::vector<Prediction> &predictions, int
 		outputInfo(os.str().c_str());
 
 	if (type & LOG_TYPE_UI_FILE)
-		AddFileViewBranch(file);
+		AddFileViewBranch(shortname);
 }
 
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)
@@ -312,11 +319,16 @@ void CAEyeView::OnOpenFileList()
 
 	for (std::vector<std::string>::iterator i = imageList.begin(); i != imageList.end(); i++)
 	{
-		predict(imagePath + *i, result, msTime);
+		string file = imagePath + *i;
+		string shortname = UtilityFile::getShortFileName(file);
 
-		m_PredictionResultList.insert(PredictionResultPair(imagePath + *i, result));
+		predict(file, result, msTime);
 
-		updateUI(imagePath + *i, result, msTime);
+		m_PredictionResultList.insert(PredictionResultPair(shortname, result));
+
+		m_FilesMap.insert(FilesPair(shortname, file));
+
+		updateUI(shortname, file, result, msTime);
 	}
 
 	//updateUI( *( imageList.end()-1), result, msTime);

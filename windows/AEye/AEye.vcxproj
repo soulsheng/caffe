@@ -163,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Classifier.h" />
+    <ClInclude Include="..\common\Utility.h" />
     <ClInclude Include="AEye.h" />
     <ClInclude Include="AEyeDoc.h" />
     <ClInclude Include="AEyeView.h" />
@@ -179,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\common\Classifier.cpp" />
+    <ClCompile Include="..\common\Utility.cpp" />
     <ClCompile Include="AEye.cpp" />
     <ClCompile Include="AEyeDoc.cpp" />
     <ClCompile Include="AEyeView.cpp" />
