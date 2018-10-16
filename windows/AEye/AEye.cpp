@@ -135,6 +135,9 @@ BOOL CAEyeApp::InitInstance()
 	// 唯一的一个窗口已初始化，因此显示它并对其进行更新
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
+
+	m_pMainWnd->SetWindowText("海仪所-AEye 1.0 beta");
+
 	return TRUE;
 }
 

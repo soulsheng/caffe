@@ -178,13 +178,12 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "文件(&F)"
     BEGIN
-        MENUITEM "新建(&N)\tCtrl+N",              ID_FILE_NEW
-        MENUITEM "打开(&O)...\tCtrl+O",           ID_FILE_OPEN
-        MENUITEM "打开目录",                        ID_OPEN_FILE_LIST
+        MENUITEM "配置",                          ID_SETTING
+        MENUITEM "识别(&O)...\tCtrl+O",           ID_FILE_OPEN
+        MENUITEM "批量识别",                        ID_OPEN_FILE_LIST
+        MENUITEM SEPARATOR
         MENUITEM "保存(&S)\tCtrl+S",              ID_FILE_SAVE
         MENUITEM "另存为(&A)...",                  ID_FILE_SAVE_AS
-        MENUITEM SEPARATOR
-        MENUITEM "配置",                          ID_SETTING
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)",                      ID_APP_EXIT
     END
@@ -319,21 +318,21 @@ END
 
 IDD_DIALOG_SETTING DIALOGEX 0, 0, 309, 176
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "配置"
+CAPTION "配置DNN"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     DEFPUSHBUTTON   "确定",IDOK,198,155,50,14
     PUSHBUTTON      "取消",IDCANCEL,252,155,50,14
-    LTEXT           "模型文件：",IDC_STATIC,29,29,41,8
-    EDITTEXT        IDC_EDIT_FILE_MODEL,68,26,161,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_MODEL,235,26,50,14
-    LTEXT           "训练文件：",IDC_STATIC,29,53,41,8
+    LTEXT           "DNN层次结构：",IDC_STATIC,7,29,58,8
+    EDITTEXT        IDC_EDIT_FILE_MODEL,67,26,161,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_MODEL,234,26,50,14
+    LTEXT           "DNN权值矩阵：",IDC_STATIC,7,52,57,8
     EDITTEXT        IDC_EDIT_FILE_TRAIN,67,49,161,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_TRAIN,235,49,50,14
-    LTEXT           "均值文件：",IDC_STATIC,29,75,41,8
-    EDITTEXT        IDC_EDIT_FILE_MEAN,68,72,161,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_MEAN,235,72,50,14
-    LTEXT           "标记文件：",IDC_STATIC,28,98,41,8
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_TRAIN,234,49,50,14
+    LTEXT           "样本均值文件：",IDC_STATIC,7,75,56,8
+    EDITTEXT        IDC_EDIT_FILE_MEAN,67,72,161,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_MEAN,234,72,50,14
+    LTEXT           "类别标记列表：",IDC_STATIC,7,98,56,8
     EDITTEXT        IDC_EDIT_FILE_LABEL,67,95,161,14,ES_AUTOHSCROLL
     PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_LABEL,234,95,50,14
 END
@@ -439,7 +438,7 @@ END
 STRINGTABLE
 BEGIN
     ID_FILE_NEW             "创建新文档\n新建"
-    ID_FILE_OPEN            "打开现有文档\n打开"
+    ID_FILE_OPEN            "识别一个样本\n打开"
     ID_FILE_CLOSE           "关闭活动文档\n关闭"
     ID_FILE_SAVE            "保存活动文档\n保存"
     ID_FILE_SAVE_AS         "用新名称保存活动文档\n另存为"

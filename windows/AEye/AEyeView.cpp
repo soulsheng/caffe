@@ -173,6 +173,8 @@ void CAEyeView::OnFileOpen()
 	INT_PTR result = dlg.DoModal();
 	if (result == IDOK)
 	{
+		outputInfo("识别一个样本：");
+
 		CString fileName = dlg.GetPathName();
 
 		string file = fileName.GetBuffer();
@@ -185,6 +187,8 @@ void CAEyeView::OnFileOpen()
 		cachePredictionResult(shortname, result, file);
 
 		updateUI(shortname, file, result, msTime);
+
+		outputInfo("");
 	}
 
 }
@@ -229,6 +233,8 @@ void CAEyeView::AddFileViewBranch(FilesMap& names)
 
 void CAEyeView::sortPredictionResult()
 {
+	outputInfo("分类排序：");
+
 	clock_t msTimeAll = clock();
 
 	for (PredictionResultMap::iterator itrPRM = m_PredictionResultList.begin();
@@ -256,8 +262,8 @@ void CAEyeView::sortPredictionResult()
 
 	std::ostringstream os;
 
-	os << "---------- cost "
-		<< clock() - msTimeAll << " ms for sorting "
+	os << "---------- 耗费 "
+		<< clock() - msTimeAll << " 毫秒 排序 "
 		<< std::endl;
 
 	outputInfo(os.str().c_str());
@@ -267,11 +273,12 @@ void CAEyeView::sortPredictionResult()
 
 	AddFileViewBranch(m_ClassTop1Map);
 
-	os << "---------- cost "
-		<< clock() - msTimeAll << " ms for update ui "
+	os << "---------- 耗费 "
+		<< clock() - msTimeAll << " 毫秒 更新界面 "
 		<< std::endl;
 
 	outputInfo(os.str().c_str());
+	outputInfo("");
 }
 
 void CAEyeView::switchBilViewByName(std::string name)
@@ -317,11 +324,11 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Prediction
 {
 	std::ostringstream os;
 
-	os << "---------- Prediction for "
+	os << "---------- 识别 "
 		<< shortname << " ----------" << std::endl;
 
-	os << "---------- cost "
-		<< msTime << " ms, " << std::endl;
+	os << "---------- 耗费 "
+		<< msTime << " 毫秒, " << std::endl;
 
 	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
 
@@ -414,9 +421,10 @@ void CAEyeView::OnOpenFileList()
 	}
 
 	std::ostringstream os;
-	os << "---------- cost "
-		<< clock() - msTimeAll << " ms for predicting "
-		<< imageList.size() << " images. " << std::endl;
+	os << "---------- 总共耗费 "
+		<< clock() - msTimeAll << " 毫秒 批量识别 "
+		<< imageList.size() << " 张图片, " << std::endl
+		<< "平均每张图片耗时 " << (clock() - msTimeAll)*1.0f / imageList.size() << "毫秒 " << std::endl;
 
 	outputInfo(os.str().c_str());
 
@@ -426,12 +434,12 @@ void CAEyeView::OnOpenFileList()
 	//updateUI( *( imageList.end()-1), result, msTime);
 	AddFileViewBranch(m_FilesMap);
 
-	os << "---------- cost "
-		<< clock() - msTimeAll << " ms for update ui "
+	os << "---------- 耗费 "
+		<< clock() - msTimeAll << " 毫秒 更新界面 "
 		<< std::endl;
 
 	outputInfo(os.str().c_str());
-
+	outputInfo("");
 
 }
 
@@ -452,7 +460,7 @@ void CAEyeView::getFilePathFromDialog(std::string &path)
 	//初始化入口参数bi结束
 
 	std::string strMessage = path;
-	strMessage = path + "正在选择图片路径...";
+	strMessage = path + "批量识别整个目录...";
 	outputInfo(strMessage.c_str());
 	LOG(INFO) << strMessage;
 
@@ -466,8 +474,9 @@ void CAEyeView::getFilePathFromDialog(std::string &path)
 		path = std::string(Buffer) + "\\";
 
 		outputInfo(path.c_str());
-		outputInfo("图片路径已选中");
-		LOG(INFO) << path << "图片路径已选中";
+		outputInfo("");
+		//outputInfo("图片路径已选中");
+		//LOG(INFO) << path << "图片路径已选中";
 	}
 
 
@@ -527,5 +536,5 @@ void CAEyeView::OnSetting()
 	classifier.load(model_file, trained_file, mean_file, label_file);
 
 	outputInfo("识别模型配置完成！");
-
+	outputInfo("");
 }
