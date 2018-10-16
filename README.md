@@ -69,5 +69,14 @@ Refer to the BVLC/caffe master branch README for all other details such as licen
 
 find class in file view
 
+show class without code/id
 
+count uo samples to item of file view 
 
+add property page for level condition for file view
+
+add progress bar for batch processing 
+
+add progress bar for setting dnn
+
+find class in file view

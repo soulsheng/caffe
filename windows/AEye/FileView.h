@@ -35,7 +35,11 @@ protected:
 	CImageList m_FileViewImages;
 	CFileViewToolBar m_wndToolBar;
 
-	HTREEITEM	m_hRoot;
+	HTREEITEM	m_hRootCertainMost;
+	HTREEITEM	m_hRootCertain;
+	HTREEITEM	m_hRootMiddle;
+	HTREEITEM	m_hRootUncertain;
+	HTREEITEM	m_hRootUncertainMost;
 
 protected:
 	void FillFileView();
@@ -46,6 +50,9 @@ public:
 
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+
+	void createRootItem();
+
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
 	afx_msg void OnCollapseAll();

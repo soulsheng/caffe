@@ -422,7 +422,7 @@ void CAEyeView::OnOpenFileList()
 
 	std::ostringstream os;
 	os << "---------- 总共耗费 "
-		<< clock() - msTimeAll << " 毫秒 批量识别 "
+		<< (clock() - msTimeAll)/1000.0f << " 秒 批量识别 "
 		<< imageList.size() << " 张图片, " << std::endl
 		<< "平均每张图片耗时 " << (clock() - msTimeAll)*1.0f / imageList.size() << "毫秒 " << std::endl;
 

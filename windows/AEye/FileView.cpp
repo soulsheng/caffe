@@ -80,12 +80,30 @@ int CFileView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 	// 填入一些静态树视图数据(此处只需填入虚拟代码，而不是复杂的数据)
 	//FillFileView();
-	m_hRoot = m_wndFileView.InsertItem(_T("样本列表："), 0, 0);
-	m_wndFileView.SetItemState(m_hRoot, TVIS_BOLD, TVIS_BOLD);
+	createRootItem();
+
 
 	AdjustLayout();
 
 	return 0;
+}
+
+void CFileView::createRootItem()
+{
+	m_hRootCertainMost = m_wndFileView.InsertItem(_T("极确定列表(p>0.9)"), 0, 0);
+	m_wndFileView.SetItemState(m_hRootCertainMost, TVIS_BOLD, TVIS_BOLD);
+
+	m_hRootCertain = m_wndFileView.InsertItem(_T("确定列表(p>0.6)"), 0, 0);
+	m_wndFileView.SetItemState(m_hRootCertain, TVIS_BOLD, TVIS_BOLD);
+
+	m_hRootMiddle = m_wndFileView.InsertItem(_T("中间列表(p>0.3)"), 0, 0);
+	m_wndFileView.SetItemState(m_hRootMiddle, TVIS_BOLD, TVIS_BOLD);
+
+	m_hRootUncertain = m_wndFileView.InsertItem(_T("不确定列表(p>0.1)"), 0, 0);
+	m_wndFileView.SetItemState(m_hRootUncertain, TVIS_BOLD, TVIS_BOLD);
+
+	m_hRootUncertainMost = m_wndFileView.InsertItem(_T("极不确定列表(p<0.1)"), 0, 0);
+	m_wndFileView.SetItemState(m_hRootUncertainMost, TVIS_BOLD, TVIS_BOLD);
 }
 
 void CFileView::OnSize(UINT nType, int cx, int cy)
@@ -96,36 +114,51 @@ void CFileView::OnSize(UINT nType, int cx, int cy)
 
 void CFileView::AddBranch(std::string name)
 {
-	m_wndFileView.InsertItem(name.c_str(), 2, 2, m_hRoot);
-	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
+	m_wndFileView.InsertItem(name.c_str(), 2, 2, m_hRootCertain);
+	m_wndFileView.Expand(m_hRootCertain, TVE_EXPAND);
 }
 
 void CFileView::AddBranch(ClassTop1Map& names)
 {
 	m_wndFileView.DeleteAllItems();
 
-	m_hRoot = m_wndFileView.InsertItem(_T("样本列表："), 0, 0);
-	m_wndFileView.SetItemState(m_hRoot, TVIS_BOLD, TVIS_BOLD);
+	createRootItem();
 
 	for (ClassTop1Map::iterator itrCTM = names.begin(); itrCTM != names.end(); itrCTM++)
 	{
-		HTREEITEM hRootSub = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRoot);
-
 		Top1Map		&top1Map = itrCTM->second;
-		for (Top1Map::iterator itr = top1Map.begin(); itr != top1Map.end(); itr++)
-			m_wndFileView.InsertItem(itr->second.c_str(), 2, 2, hRootSub);
+		if (top1Map.empty())
+			continue;
+
+		HTREEITEM hRootSubCurrent;
+
+		Top1Map::iterator itr = top1Map.begin();
+
+		if (itr->first > 0.9)
+			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootCertainMost);
+		else if (itr->first > 0.6)
+			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootCertain);
+		else if (itr->first > 0.3)
+			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootMiddle);
+		else if (itr->first > 0.1)
+			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootUncertain);
+		else
+			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootUncertainMost);
+
+		for (; itr != top1Map.end(); itr++)
+			m_wndFileView.InsertItem(itr->second.c_str(), 2, 2, hRootSubCurrent);
 
 	}
 
-	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
+	m_wndFileView.Expand(m_hRootCertain, TVE_EXPAND);
 }
 
 void CFileView::AddBranch(FilesMap& names)
 {
 	for (FilesMap::iterator itr = names.begin(); itr != names.end(); itr++)
-		m_wndFileView.InsertItem(itr->first.c_str(), 2, 2, m_hRoot);
+		m_wndFileView.InsertItem(itr->first.c_str(), 2, 2, m_hRootCertain);
 
-	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
+	m_wndFileView.Expand(m_hRootCertain, TVE_EXPAND);
 }
 
 void CFileView::FillFileView()
@@ -210,14 +243,14 @@ void CFileView::AdjustLayout()
 
 void CFileView::OnCollapseAll()
 {
-	m_wndFileView.Expand(m_hRoot, TVE_COLLAPSE);
+	m_wndFileView.Expand(m_wndFileView.GetSelectedItem(), TVE_COLLAPSE);
 
 }
 
 void CFileView::OnFileOpen()
 {
 	// TODO:  在此处添加命令处理程序代码
-	m_wndFileView.Expand(m_hRoot, TVE_EXPAND);
+	m_wndFileView.Expand(m_wndFileView.GetSelectedItem(), TVE_EXPAND);
 
 }
 
@@ -233,7 +266,7 @@ void CFileView::OnFileOpenWith()
 void CFileView::OnExpandAll()
 {
 	// TODO:  在此处添加命令处理程序代码
-	HTREEITEM hChild = m_wndFileView.GetChildItem(m_hRoot);
+	HTREEITEM hChild = m_wndFileView.GetChildItem(m_wndFileView.GetSelectedItem());
 
 	if (hChild == NULL)
 		return;
