@@ -169,6 +169,7 @@
     <ClInclude Include="AEyeView.h" />
     <ClInclude Include="ClassView.h" />
     <ClInclude Include="commonDefinition.h" />
+    <ClInclude Include="DialogSetting.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="MainFrm.h" />
     <ClInclude Include="OutputWnd.h" />
@@ -185,6 +186,7 @@
     <ClCompile Include="AEyeDoc.cpp" />
     <ClCompile Include="AEyeView.cpp" />
     <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="DialogSetting.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="MainFrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />

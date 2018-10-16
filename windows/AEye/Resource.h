@@ -18,10 +18,10 @@
 #define ID_WINDOW_MANAGER               131
 #define ID_VIEW_FILEVIEW                133
 #define ID_VIEW_CLASSVIEW               134
-#define ID_COLLAPES_ALL                   135
+#define ID_COLLAPES_ALL                 135
 #define ID_OPEN                         136
 #define ID_OPEN_WITH                    137
-#define ID_EXPAND_ALL_File                138
+#define ID_EXPAND_ALL_File              138
 #define ID_CLASS_ADD_MEMBER_FUNCTION    139
 #define ID_CLASS_ADD_MEMBER_VARIABLE    140
 #define ID_CLASS_DEFINITION             141
@@ -84,16 +84,27 @@
 #define IDS_FIND_TAB                    302
 #define IDS_EXPLORER                    305
 #define IDS_EDIT_MENU                   306
+#define IDD_DIALOG_SETTING              310
+#define IDC_EDIT_FILE_MODEL             1000
+#define IDC_BUTTON_OPEN_FILE_MODEL      1001
+#define IDC_EDIT_FILE_TRAIN             1002
+#define IDC_BUTTON_OPEN_FILE_TRAIN      1003
+#define IDC_EDIT_FILE_MEAN              1004
+#define IDC_BUTTON_OPEN_FILE_MEAN       1005
+#define IDC_EDIT_FILE_LABEL             1006
+#define IDC_BUTTON_OPEN_FILE_LABEL      1007
 #define ID_32771                        32771
 #define ID_OPEN_FILE_LIST               32772
+#define ID_32773                        32773
+#define ID_SETTING                      32774
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        310
-#define _APS_NEXT_COMMAND_VALUE         32773
-#define _APS_NEXT_CONTROL_VALUE         1000
+#define _APS_NEXT_RESOURCE_VALUE        311
+#define _APS_NEXT_COMMAND_VALUE         32775
+#define _APS_NEXT_CONTROL_VALUE         1002
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

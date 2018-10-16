@@ -66,6 +66,9 @@
     <ClInclude Include="..\common\Utility.h">
       <Filter>common</Filter>
     </ClInclude>
+    <ClInclude Include="DialogSetting.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AEye.cpp">
@@ -103,6 +106,9 @@
     </ClCompile>
     <ClCompile Include="..\common\Utility.cpp">
       <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="DialogSetting.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -83,10 +83,10 @@ protected:
 
 	string m_currentClassNamePredict;
 
-	string model_file = "G:\\file\\code\\dnn\\caffe\\models\\bvlc_reference_caffenet\\deploy.prototxt";
-	string trained_file = "G:\\file\\code\\dnn\\caffe\\models\\bvlc_reference_caffenet\\bvlc_reference_caffenet.caffemodel";
-	string mean_file = "../../data/ilsvrc12/imagenet_mean.binaryproto";
-	string label_file = "../../data/ilsvrc12/synset_words_cn.txt";
+	string model_file;
+	string trained_file;
+	string mean_file;
+	string label_file;
 
 	CImage image;
 
@@ -98,6 +98,7 @@ public:
 	void getFilePathFromDialog(std::string &path);
 	void getFileListFromPath(std::string &path, std::vector<std::string> &list);
 
+	afx_msg void OnSetting();
 };
 
 #ifndef _DEBUG  // AEyeView.cpp 中的调试版本

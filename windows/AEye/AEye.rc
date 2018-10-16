@@ -144,7 +144,7 @@ END
 
 IDR_EXPLORER TOOLBAR 16, 15
 BEGIN
-BUTTON      ID_COLLAPES_ALL
+    BUTTON      ID_COLLAPES_ALL
 END
 
 IDR_MENU_IMAGES TOOLBAR 16, 15
@@ -184,6 +184,7 @@ BEGIN
         MENUITEM "保存(&S)\tCtrl+S",              ID_FILE_SAVE
         MENUITEM "另存为(&A)...",                  ID_FILE_SAVE_AS
         MENUITEM SEPARATOR
+        MENUITEM "配置",                          ID_SETTING
         MENUITEM SEPARATOR
         MENUITEM "退出(&X)",                      ID_APP_EXIT
     END
@@ -244,9 +245,9 @@ BEGIN
     BEGIN
         MENUITEM "分类排序(&W)....",                ID_OPEN_WITH
         MENUITEM SEPARATOR
-        MENUITEM "一级全部展开(&O)",                      ID_OPEN
-        MENUITEM "二级全部展开(&E)",                      ID_EXPAND_ALL_File
-        MENUITEM "全部收起(&C)...",                   ID_COLLAPES_ALL
+        MENUITEM "一级全部展开(&O)",                  ID_OPEN
+        MENUITEM "二级全部展开(&E)",                  ID_EXPAND_ALL_File
+        MENUITEM "全部收起(&C)...",                 ID_COLLAPES_ALL
     END
 END
 
@@ -316,6 +317,27 @@ BEGIN
     DEFPUSHBUTTON   "确定",IDOK,113,41,50,14,WS_GROUP
 END
 
+IDD_DIALOG_SETTING DIALOGEX 0, 0, 309, 176
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "配置"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,198,155,50,14
+    PUSHBUTTON      "取消",IDCANCEL,252,155,50,14
+    LTEXT           "模型文件：",IDC_STATIC,29,29,41,8
+    EDITTEXT        IDC_EDIT_FILE_MODEL,68,26,161,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_MODEL,235,26,50,14
+    LTEXT           "训练文件：",IDC_STATIC,29,53,41,8
+    EDITTEXT        IDC_EDIT_FILE_TRAIN,67,49,161,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_TRAIN,235,49,50,14
+    LTEXT           "均值文件：",IDC_STATIC,29,75,41,8
+    EDITTEXT        IDC_EDIT_FILE_MEAN,68,72,161,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_MEAN,235,72,50,14
+    LTEXT           "标记文件：",IDC_STATIC,28,98,41,8
+    EDITTEXT        IDC_EDIT_FILE_LABEL,67,95,161,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "打开...",IDC_BUTTON_OPEN_FILE_LABEL,234,95,50,14
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -370,6 +392,14 @@ BEGIN
         RIGHTMARGIN, 163
         TOPMARGIN, 7
         BOTTOMMARGIN, 55
+    END
+
+    IDD_DIALOG_SETTING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 302
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 169
     END
 END
 #endif    // APSTUDIO_INVOKED

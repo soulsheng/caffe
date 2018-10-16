@@ -15,6 +15,8 @@
 
 #include "Utility.h"
 
+#include "DialogSetting.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -37,6 +39,7 @@ BEGIN_MESSAGE_MAP(CAEyeView, CView)
 	ON_WM_TIMER()
 	ON_WM_CREATE()
 	ON_COMMAND(ID_OPEN_FILE_LIST, &CAEyeView::OnOpenFileList)
+	ON_COMMAND(ID_SETTING, &CAEyeView::OnSetting)
 END_MESSAGE_MAP()
 
 // CAEyeView 构造/析构
@@ -157,6 +160,12 @@ CAEyeDoc* CAEyeView::GetDocument() const // 非调试版本是内联的
 void CAEyeView::OnFileOpen()
 {
 	// TODO:  在此添加命令处理程序代码
+	if (!classifier.isInitialized())
+	{
+		AfxMessageBox("未配置识别参数！");
+		return;
+	}
+
 	CFileDialog dlg(TRUE,
 		"*.jpg;*.jpeg", NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
@@ -282,7 +291,6 @@ void CAEyeView::switchBilViewByName(std::string name)
 
 void CAEyeView::setDefault()
 {
-	classifier.load(model_file, trained_file, mean_file, label_file);
 
 }
 
@@ -370,6 +378,13 @@ int CAEyeView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 void CAEyeView::OnOpenFileList()
 {
 	// TODO:  在此添加命令处理程序代码
+
+	if (!classifier.isInitialized())
+	{
+		AfxMessageBox("未配置识别参数！");
+		return;
+	}
+
 	std::string		imagePath;
 
 	getFilePathFromDialog(imagePath);
@@ -483,5 +498,34 @@ void CAEyeView::getFileListFromPath(std::string &path, std::vector<std::string> 
 		list.push_back(fileData.cFileName);
 		bState = FindNextFile(file, &fileData);
 	}
+
+}
+
+
+void CAEyeView::OnSetting()
+{
+	// TODO:  在此添加命令处理程序代码
+	outputInfo("正在配置识别模型...");
+
+	CDialogSetting dlgSetting;
+	if (!dlgSetting.DoModal())
+		return;
+
+	std::vector<std::string> vecSetting = dlgSetting.getStringVecSetting();
+
+	if (vecSetting.size() != 4)
+	{
+		AfxMessageBox("需要4个参数，请设置完全！");
+		return;
+	}
+
+	model_file = vecSetting[0];
+	trained_file = vecSetting[1];
+	mean_file = vecSetting[2];
+	label_file = vecSetting[3];
+
+	classifier.load(model_file, trained_file, mean_file, label_file);
+
+	outputInfo("识别模型配置完成！");
 
 }

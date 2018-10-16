@@ -59,6 +59,11 @@ std::vector<Prediction> Classifier::Classify(const cv::Mat& img, int N) {
 	return predictions;
 }
 
+bool Classifier::isInitialized()
+{
+	return NULL != net_;
+}
+
 /* Load the mean file in binaryproto format. */
 void Classifier::SetMean(const string& mean_file) {
 	BlobProto blob_proto;

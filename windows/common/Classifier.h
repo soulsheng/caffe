@@ -32,6 +32,8 @@ public:
 
 	std::vector<Prediction> Classify(const cv::Mat& img, int N = 5);
 
+	bool isInitialized();
+
 private:
 	void SetMean(const string& mean_file);
 

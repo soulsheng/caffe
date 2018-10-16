@@ -63,3 +63,11 @@ Now, you should be able to build `.\windows\Caffe.sln`
 ## Further Details
 
 Refer to the BVLC/caffe master branch README for all other details such as license, citation, and so on.
+
+
+## To Do
+
+find class in file view
+
+
+
