@@ -212,11 +212,11 @@ void CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int 
 	msTime = clock() - t;
 }
 
-void CAEyeView::AddFileViewBranch(std::string fileNameShort)
+void CAEyeView::AddFileViewBranch(std::string fileNameShort, float score)
 {
 	// MainFrame
 	CMainFrame *pMain = (CMainFrame *)AfxGetMainWnd();
-	pMain->AddFileViewBranch(fileNameShort);
+	pMain->AddFileViewBranch(fileNameShort, score);
 }
 
 void CAEyeView::AddFileViewBranch(ClassTop1Map& names)
@@ -358,7 +358,7 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Prediction
 		outputInfo(os.str().c_str());
 
 	if (type & LOG_TYPE_UI_FILE)
-		AddFileViewBranch(shortname);
+		AddFileViewBranch(shortname, predictions[0].second);
 }
 
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)

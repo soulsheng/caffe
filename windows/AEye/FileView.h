@@ -24,9 +24,11 @@ public:
 	void AdjustLayout();
 	void OnChangeVisualStyle();
 
-	void	AddBranch(std::string name);
+	void	AddBranch(std::string name, float score);
 	void	AddBranch(ClassTop1Map& names);
 	void	AddBranch(FilesMap& names);
+
+	HTREEITEM InsertItemByScore(float score, std::string filename);
 
 // Ьиад
 protected:
@@ -40,6 +42,8 @@ protected:
 	HTREEITEM	m_hRootMiddle;
 	HTREEITEM	m_hRootUncertain;
 	HTREEITEM	m_hRootUncertainMost;
+	HTREEITEM	m_hRootCurrent;
+	HTREEITEM	m_hRootUnsort;
 
 protected:
 	void FillFileView();

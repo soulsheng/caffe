@@ -67,6 +67,8 @@ Refer to the BVLC/caffe master branch README for all other details such as licen
 
 ## To Do
 
+warn up gpu
+
 find class in file view
 
 show class without code/id
@@ -79,4 +81,3 @@ add progress bar for batch processing
 
 add progress bar for setting dnn
 
-find class in file view

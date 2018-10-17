@@ -61,7 +61,7 @@ protected:
 
 public:
 	void	FillBuildWindow(std::string& msg);
-	void	AddFileViewBranch(std::string name);
+	void	AddFileViewBranch(std::string name, float score);
 	void	AddFileViewBranch(ClassTop1Map& names);
 	void	AddFileViewBranch(FilesMap& names);
 

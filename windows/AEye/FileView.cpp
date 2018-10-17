@@ -104,6 +104,10 @@ void CFileView::createRootItem()
 
 	m_hRootUncertainMost = m_wndFileView.InsertItem(_T("极不确定列表(p<0.1)"), 0, 0);
 	m_wndFileView.SetItemState(m_hRootUncertainMost, TVIS_BOLD, TVIS_BOLD);
+
+	m_hRootUnsort = m_wndFileView.InsertItem(_T("未排序列表"), 0, 0);
+	m_wndFileView.SetItemState(m_hRootUnsort, TVIS_BOLD, TVIS_BOLD);
+
 }
 
 void CFileView::OnSize(UINT nType, int cx, int cy)
@@ -112,10 +116,15 @@ void CFileView::OnSize(UINT nType, int cx, int cy)
 	AdjustLayout();
 }
 
-void CFileView::AddBranch(std::string name)
+void CFileView::AddBranch(std::string name, float score)
 {
-	m_wndFileView.InsertItem(name.c_str(), 2, 2, m_hRootCertain);
-	m_wndFileView.Expand(m_hRootCertain, TVE_EXPAND);
+	HTREEITEM hSubCurrent = InsertItemByScore(score, name);
+	m_wndFileView.Expand(m_hRootCurrent, TVE_EXPAND);
+
+	m_wndFileView.SelectItem(hSubCurrent);
+
+	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
+	OnSetFocus(pFrame);
 }
 
 void CFileView::AddBranch(ClassTop1Map& names)
@@ -134,31 +143,44 @@ void CFileView::AddBranch(ClassTop1Map& names)
 
 		Top1Map::iterator itr = top1Map.begin();
 
-		if (itr->first > 0.9)
-			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootCertainMost);
-		else if (itr->first > 0.6)
-			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootCertain);
-		else if (itr->first > 0.3)
-			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootMiddle);
-		else if (itr->first > 0.1)
-			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootUncertain);
-		else
-			hRootSubCurrent = m_wndFileView.InsertItem(itrCTM->first.c_str(), 2, 2, m_hRootUncertainMost);
+		hRootSubCurrent = InsertItemByScore(itr->first, itrCTM->first);
 
 		for (; itr != top1Map.end(); itr++)
 			m_wndFileView.InsertItem(itr->second.c_str(), 2, 2, hRootSubCurrent);
 
 	}
 
-	m_wndFileView.Expand(m_hRootCertain, TVE_EXPAND);
+	m_wndFileView.Expand(m_hRootCertainMost, TVE_EXPAND);
+	m_wndFileView.SelectItem(m_hRootCertainMost);
 }
 
 void CFileView::AddBranch(FilesMap& names)
 {
 	for (FilesMap::iterator itr = names.begin(); itr != names.end(); itr++)
-		m_wndFileView.InsertItem(itr->first.c_str(), 2, 2, m_hRootCertain);
+		m_wndFileView.InsertItem(itr->first.c_str(), 2, 2, m_hRootUnsort);
 
-	m_wndFileView.Expand(m_hRootCertain, TVE_EXPAND);
+	m_wndFileView.Expand(m_hRootUnsort, TVE_EXPAND);
+	m_wndFileView.SelectItem(m_hRootUnsort);
+}
+
+HTREEITEM CFileView::InsertItemByScore(float score, std::string filename)
+{
+	HTREEITEM hRootSubCurrent;
+
+	if (score > 0.9)
+		m_hRootCurrent = m_hRootCertainMost;
+	else if (score > 0.6)
+		m_hRootCurrent = m_hRootCertain;
+	else if (score > 0.3)
+		m_hRootCurrent = m_hRootMiddle;
+	else if (score > 0.1)
+		m_hRootCurrent = m_hRootUncertain;
+	else
+		m_hRootCurrent = m_hRootUncertainMost;
+
+	hRootSubCurrent = m_wndFileView.InsertItem(filename.c_str(), 2, 2, m_hRootCurrent);
+
+	return hRootSubCurrent;
 }
 
 void CFileView::FillFileView()

@@ -59,7 +59,7 @@ public:
 	void predict(string &file, std::vector<Prediction> &predictions, int &msTime);
 
 	void	switchBilViewByName(std::string name);
-	void AddFileViewBranch(std::string fileNameShort);
+	void AddFileViewBranch(std::string fileNameShort, float score);
 
 	void AddFileViewBranch(ClassTop1Map& names);
 	void AddFileViewBranch(FilesMap& names);

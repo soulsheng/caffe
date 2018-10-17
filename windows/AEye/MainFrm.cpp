@@ -255,9 +255,9 @@ void CMainFrame::FillBuildWindow(std::string& msg)
 	m_wndOutput.FillBuildWindow(msg);
 }
 
-void CMainFrame::AddFileViewBranch(std::string name)
+void CMainFrame::AddFileViewBranch(std::string name, float score)
 {
-	m_wndFileView.AddBranch(name);
+	m_wndFileView.AddBranch(name, score);
 }
 
 void CMainFrame::AddFileViewBranch(ClassTop1Map& names)
