@@ -56,7 +56,7 @@ public:
 
 	void cachePredictionResult(string shortname, std::vector<Prediction> result, string file);
 
-	void predict(string &file, std::vector<Prediction> &predictions, int &msTime);
+	bool predict(string &file, std::vector<Prediction> &predictions, int &msTime);
 
 	void	switchBilViewByName(std::string name);
 	void AddFileViewBranch(std::string fileNameShort, float score);

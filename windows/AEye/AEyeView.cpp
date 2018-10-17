@@ -200,16 +200,19 @@ void CAEyeView::cachePredictionResult(string shortname, std::vector<Prediction> 
 	m_FilesMap.insert(FilesPair(shortname, file));
 }
 
-void CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int &msTime)
+bool CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int &msTime)
 {
 
 	cv::Mat img = cv::imread(file, -1);
-	CHECK(!img.empty()) << "Unable to decode image " << file;
+	if (img.empty()) // "Unable to decode image " << file;
+		return false;
 
 	clock_t t = clock();
 	predictions = classifier.Classify(img);
 	
 	msTime = clock() - t;
+
+	return true;
 }
 
 void CAEyeView::AddFileViewBranch(std::string fileNameShort, float score)
@@ -537,4 +540,14 @@ void CAEyeView::OnSetting()
 
 	outputInfo("识别模型配置完成！");
 	outputInfo("");
+
+	std::string strDemo("..\\..\\examples\\images\\cat.jpg");
+	int msTime = 0;
+	std::vector<Prediction> result;
+
+	if( predict(strDemo, result, msTime) )
+		outputInfo("识别测试完成！");
+	outputInfo("");
+
+
 }
