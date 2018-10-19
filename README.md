@@ -54,7 +54,7 @@ To build Caffe Matlab wrapper set `MatlabSupport` to `true` and `MatlabDir` to t
 
 #### Remark
 After you have built solution with Matlab support, in order to use it you have to:
-* add the generated `matcaffe` folder to Matlab search path, and
+* add the generated `matcaffe` folder to Matlab search path, andjavascript:;
 * add `<caffe_root>\Build\x64\Release` to your system path.
 
 ### Build
@@ -67,7 +67,7 @@ Refer to the BVLC/caffe master branch README for all other details such as licen
 
 ## To Do
 
-warn up gpu
+done - warn up gpu
 
 find class in file view
 

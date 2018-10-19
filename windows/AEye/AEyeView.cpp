@@ -459,7 +459,7 @@ void CAEyeView::getFilePathFromDialog(std::string &path)
 	bi.ulFlags = BIF_EDITBOX;//带编辑框的风格
 	bi.lpfn = NULL;
 	bi.lParam = 0;
-	bi.iImage = IDR_MAINFRAME;
+	bi.iImage = 0;
 	//初始化入口参数bi结束
 
 	std::string strMessage = path;
@@ -495,12 +495,15 @@ void CAEyeView::getFilePathFromDialog(std::string &path)
 void CAEyeView::getFileListFromPath(std::string &path, std::vector<std::string> &list)
 {
 	CString csDirPath = CString(path.c_str()) + "*.jpeg";
-	HANDLE file;
+	HANDLE file = 0;
 	WIN32_FIND_DATA fileData;
 	char line[1024];
 	char fn[1000];
 	//mbstowcs(fn,csDirPath.GetBuffer(),999);
 	file = FindFirstFile(csDirPath.GetBuffer(), &fileData);
+	if (INVALID_HANDLE_VALUE == file)
+		return;
+
 	list.push_back(fileData.cFileName);
 	bool bState = false;
 	bState = FindNextFile(file, &fileData);
