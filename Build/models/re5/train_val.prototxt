@@ -10,7 +10,7 @@ layer {
   transform_param {
     mirror: true
     crop_size: 227
-    mean_file: "G:/Caffe-data/re5/re5_mean.binaryproto"
+    mean_file: "G:/Caffe-data/re5/re5_mean.binaryproto" 
   }
 # mean pixel / channel-wise mean instead of mean image
 #  transform_param {
@@ -21,7 +21,7 @@ layer {
 #    mirror: true
 #  }
   data_param {
-    source: "G:/Caffe-data/re5/re5_train_lmdb"
+    source: "G:/Caffe-data/re5/re5_train_lmdb" 
     batch_size: 256
     backend: LMDB
   }
@@ -37,7 +37,7 @@ layer {
   transform_param {
     mirror: false
     crop_size: 227
-    mean_file: "G:/Caffe-data/re5/re5_mean.binaryproto"
+    mean_file: "G:/Caffe-data/re5/re5_mean.binaryproto" 
   }
 # mean pixel / channel-wise mean instead of mean image
 #  transform_param {
@@ -48,8 +48,8 @@ layer {
 #    mirror: false
 #  }
   data_param {
-    source: "G:/Caffe-data/re5/re5_val_lmdb"
-    batch_size: 50
+    source: "G:/Caffe-data/re5/re5_val_lmdb" 
+    batch_size: 50 
     backend: LMDB
   }
 }
