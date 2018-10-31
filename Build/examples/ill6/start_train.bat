@@ -1,4 +1,4 @@
 G:
-cd G:/ImageNet/bin/
-caffe train --solver=models/ill6/solver.prototxt
+cd ../../x64/Release
+caffe train --solver=../../models/ill6/solver.prototxt
 pause

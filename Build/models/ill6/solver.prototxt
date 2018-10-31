@@ -10,5 +10,5 @@ max_iter: 20000
 momentum: 0.9
 weight_decay: 0.0005
 snapshot: 500
-snapshot_prefix: "../../models/ill6/caffenet_train"
+snapshot_prefix: "../../models/ill6/ill6_train"
 solver_mode: GPU
