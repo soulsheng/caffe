@@ -38,10 +38,11 @@ void Classifier::load(const string& model_file,
 	string line;
 	while (std::getline(labels, line))
 		labels_.push_back(string(line));
-
+#if 0
 	Blob<float>* output_layer = net_->output_blobs()[0];
 	CHECK_EQ(labels_.size(), output_layer->channels())
 		<< "Number of labels is different from the output layer dimension.";
+#endif
 }
 
 /* Return the top N predictions. */

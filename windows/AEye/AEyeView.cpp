@@ -494,7 +494,7 @@ void CAEyeView::getFilePathFromDialog(std::string &path)
 
 void CAEyeView::getFileListFromPath(std::string &path, std::vector<std::string> &list)
 {
-	CString csDirPath = CString(path.c_str()) + "*.jpeg";
+	CString csDirPath = CString(path.c_str()) + "*.jpg";
 	HANDLE file = 0;
 	WIN32_FIND_DATA fileData;
 	char line[1024];
