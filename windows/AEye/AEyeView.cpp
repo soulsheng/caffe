@@ -87,7 +87,7 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 
 	pDC->SetBkMode(TRANSPARENT); //设置背景为透明！
 	pDC->SetTextColor(RGB(255, 69, 0)); // 字体橙色
-	pDC->TextOut(rect.Width()*2/3, rect.Height()*1/9, m_currentClassNamePredict.c_str());
+	pDC->TextOut(rect.Width()*7.0f / 8, rect.Height()*1.0f / 12, m_currentClassNamePredict.c_str());
 
 	ReleaseDC(pDC);//释放picture控件的DC
 }
