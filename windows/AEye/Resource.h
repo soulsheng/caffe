@@ -93,6 +93,8 @@
 #define IDC_BUTTON_OPEN_FILE_MEAN       1005
 #define IDC_EDIT_FILE_LABEL             1006
 #define IDC_BUTTON_OPEN_FILE_LABEL      1007
+#define IDC_EDIT_FILE_CONFIG            1009
+#define IDC_BUTTON_OPEN_FILE_CONFIG     1010
 #define ID_32771                        32771
 #define ID_OPEN_FILE_LIST               32772
 #define ID_32773                        32773
@@ -104,7 +106,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        311
 #define _APS_NEXT_COMMAND_VALUE         32775
-#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_CONTROL_VALUE         1011
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif

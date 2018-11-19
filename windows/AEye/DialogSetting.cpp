@@ -5,7 +5,7 @@
 #include "AEye.h"
 #include "DialogSetting.h"
 #include "afxdialogex.h"
-
+#include "CFileUtilitySTL.h"
 
 // CDialogSetting 对话框
 
@@ -17,6 +17,7 @@ CDialogSetting::CDialogSetting(CWnd* pParent /*=NULL*/)
 	, m_FileNameTrain(_T("..\\..\\models\\bvlc_reference_caffenet\\bvlc_reference_caffenet.caffemodel"))
 	, m_FileNameMean(_T("..\\..\\data\\ilsvrc12\\imagenet_mean.binaryproto"))
 	, m_FileNameLabel(_T("..\\..\\data\\ilsvrc12\\synset_words_cn.txt"))
+	, m_FileNameConfig(_T("..\\..\\data\\ilsvrc12\\config.txt"))
 {
 
 }
@@ -32,6 +33,7 @@ void CDialogSetting::DoDataExchange(CDataExchange* pDX)
 	DDX_Text(pDX, IDC_EDIT_FILE_TRAIN, m_FileNameTrain);
 	DDX_Text(pDX, IDC_EDIT_FILE_MEAN, m_FileNameMean);
 	DDX_Text(pDX, IDC_EDIT_FILE_LABEL, m_FileNameLabel);
+	DDX_Text(pDX, IDC_EDIT_FILE_CONFIG, m_FileNameConfig);
 }
 
 
@@ -40,6 +42,7 @@ BEGIN_MESSAGE_MAP(CDialogSetting, CDialogEx)
 	ON_BN_CLICKED(IDC_BUTTON_OPEN_FILE_TRAIN, &CDialogSetting::OnBnClickedButtonOpenFileTrain)
 	ON_BN_CLICKED(IDC_BUTTON_OPEN_FILE_MEAN, &CDialogSetting::OnBnClickedButtonOpenFileMean)
 	ON_BN_CLICKED(IDC_BUTTON_OPEN_FILE_LABEL, &CDialogSetting::OnBnClickedButtonOpenFileLabel)
+	ON_BN_CLICKED(IDC_BUTTON_OPEN_FILE_CONFIG, &CDialogSetting::OnBnClickedButtonOpenFileConfig)
 END_MESSAGE_MAP()
 
 
@@ -122,4 +125,59 @@ void CDialogSetting::OnBnClickedButtonOpenFileLabel()
 
 		UpdateData(FALSE);
 	}
+}
+
+
+void CDialogSetting::OnBnClickedButtonOpenFileConfig()
+{
+	// TODO:  在此添加控件通知处理程序代码
+	CFileDialog dlg(TRUE,
+		"*.txt", NULL,
+		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+		"txt(*.txt)|| All Files (*.*) |*.*||||", this);
+	INT_PTR result = dlg.DoModal();
+	if (result == IDOK)
+	{
+		m_FileNameConfig = dlg.GetPathName();
+
+		UpdateData(FALSE);
+	}
+
+	StringVec lines;
+	if (m_FileNameConfig.IsEmpty())
+	{
+		AfxMessageBox("配置文件无法打开");
+		return;
+	}
+
+
+	CFileUtilitySTL::readFilelist(m_FileNameConfig.GetBuffer(), lines);
+
+	if (lines.size() != 4)
+	{
+		AfxMessageBox("配置文件内容有误，必须包含4行文件名称！");
+		return;
+	}
+
+	StringVec::iterator itr = lines.begin();
+	for (; itr != lines.end(); itr++)
+	{
+		if ( !CFileUtilitySTL::checkFileExist(*itr) )
+			break;
+	}
+
+	// 配置文件内容有误
+	if (lines.end() != itr)
+	{
+		AfxMessageBox("配置文件内容有误，其中有些文件无法打开！");
+		return;
+	}
+
+	m_FileNameModel = lines[0].c_str();
+	m_FileNameTrain = lines[1].c_str();
+	m_FileNameMean = lines[2].c_str();
+	m_FileNameLabel = lines[3].c_str();
+	UpdateData(FALSE);
+
+	
 }

@@ -299,3 +299,20 @@ StringVec CFileUtilitySTL::split(const tstring &str, const tstring &pattern)
 
 	return resultVec;
 }
+
+bool CFileUtilitySTL::checkFileExist(tstring& filepath)
+{
+	ifstream file;
+
+	file.open(filepath);
+	if (!file)
+	{
+		//std::cout << "文件不存在" << endl;
+		file.close();
+		return false;
+	}
+
+	//std::cout << "文件存在" << endl;
+	file.close();
+	return true;
+}

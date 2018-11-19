@@ -39,4 +39,6 @@ public:
 
 	static StringVec split(const tstring &str, const tstring &pattern);
 
+	static bool		checkFileExist(tstring& filepath);
+
 };

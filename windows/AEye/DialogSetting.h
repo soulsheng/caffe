@@ -32,4 +32,6 @@ public:
 	afx_msg void OnBnClickedButtonOpenFileTrain();
 	afx_msg void OnBnClickedButtonOpenFileMean();
 	afx_msg void OnBnClickedButtonOpenFileLabel();
+	afx_msg void OnBnClickedButtonOpenFileConfig();
+	CString m_FileNameConfig;
 };
