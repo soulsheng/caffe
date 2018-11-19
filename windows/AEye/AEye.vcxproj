@@ -162,7 +162,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\common\CFileUtilitySTL.h" />
+    <ClInclude Include="..\common\CFileUtilityWIN.h" />
     <ClInclude Include="..\common\Classifier.h" />
+    <ClInclude Include="..\common\commonDefinitionFile.h" />
     <ClInclude Include="..\common\Utility.h" />
     <ClInclude Include="AEye.h" />
     <ClInclude Include="AEyeDoc.h" />
@@ -180,6 +183,8 @@
     <ClInclude Include="ViewTree.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\common\CFileUtilitySTL.cpp" />
+    <ClCompile Include="..\common\CFileUtilityWIN.cpp" />
     <ClCompile Include="..\common\Classifier.cpp" />
     <ClCompile Include="..\common\Utility.cpp" />
     <ClCompile Include="AEye.cpp" />

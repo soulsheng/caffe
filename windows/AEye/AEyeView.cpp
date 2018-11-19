@@ -13,7 +13,9 @@
 #include "AEyeView.h"
 #include "MainFrm.h"
 
-#include "Utility.h"
+//#include "Utility.h"
+#include "CFileUtilityWIN.h"
+#include "CFileUtilitySTL.h"
 
 #include "DialogSetting.h"
 
@@ -178,7 +180,7 @@ void CAEyeView::OnFileOpen()
 		CString fileName = dlg.GetPathName();
 
 		string file = fileName.GetBuffer();
-		string shortname = UtilityFile::getShortFileName(file);
+		string shortname = CFileUtilitySTL::getShortFileName(file);
 
 		int msTime = 0;
 		std::vector<Prediction> result;
@@ -397,14 +399,15 @@ void CAEyeView::OnOpenFileList()
 
 	std::string		imagePath;
 
-	getFilePathFromDialog(imagePath);
+	CFileUtilityWIN::getFilePathFromDialog(imagePath);
 
 	if (imagePath.empty())
 		return;
 
 	std::vector<std::string>		imageList;
 
-	getFileListFromPath(imagePath, imageList);
+	//getFileListFromPath(imagePath, imageList);
+	CFileUtilityWIN::getFileListFromPath(imagePath, _T("jpg"), imageList);
 
 	int msTime = 0;
 	std::vector<Prediction> result;
@@ -414,7 +417,7 @@ void CAEyeView::OnOpenFileList()
 	for (std::vector<std::string>::iterator i = imageList.begin(); i != imageList.end(); i++)
 	{
 		string file = imagePath + *i;
-		string shortname = UtilityFile::getShortFileName(file);
+		string shortname = CFileUtilitySTL::getShortFileName(file);
 
 		predict(file, result, msTime);
 
@@ -445,77 +448,6 @@ void CAEyeView::OnOpenFileList()
 	outputInfo("");
 
 }
-
-void CAEyeView::getFilePathFromDialog(std::string &path)
-{
-	BROWSEINFO bi;
-	char Buffer[MAX_PATH];
-
-	//初始化入口参数bi开始
-	bi.hwndOwner = NULL;
-	bi.pidlRoot = NULL;//初始化制定的root目录很不容易
-	bi.pszDisplayName = Buffer;//此参数如为NULL则不能显示对话框
-	bi.lpszTitle = "选择图片路径";
-	bi.ulFlags = BIF_EDITBOX;//带编辑框的风格
-	bi.lpfn = NULL;
-	bi.lParam = 0;
-	bi.iImage = 0;
-	//初始化入口参数bi结束
-
-	std::string strMessage = path;
-	strMessage = path + "批量识别整个目录...";
-	outputInfo(strMessage.c_str());
-	LOG(INFO) << strMessage;
-
-	LPITEMIDLIST pIDList = SHBrowseForFolder(&bi);//调用显示选择对话框
-
-	if (pIDList)
-	{
-		SHGetPathFromIDList(pIDList, Buffer);
-
-		//取得文件夹路径到Buffer里
-		path = std::string(Buffer) + "\\";
-
-		outputInfo(path.c_str());
-		outputInfo("");
-		//outputInfo("图片路径已选中");
-		//LOG(INFO) << path << "图片路径已选中";
-	}
-
-
-	// free memory used   
-	IMalloc * imalloc = 0;
-	if (SUCCEEDED(SHGetMalloc(&imalloc)))
-	{
-		imalloc->Free(pIDList);
-		imalloc->Release();
-	}
-}
-
-void CAEyeView::getFileListFromPath(std::string &path, std::vector<std::string> &list)
-{
-	CString csDirPath = CString(path.c_str()) + "*.jpg";
-	HANDLE file = 0;
-	WIN32_FIND_DATA fileData;
-	char line[1024];
-	char fn[1000];
-	//mbstowcs(fn,csDirPath.GetBuffer(),999);
-	file = FindFirstFile(csDirPath.GetBuffer(), &fileData);
-	if (INVALID_HANDLE_VALUE == file)
-		return;
-
-	list.push_back(fileData.cFileName);
-	bool bState = false;
-	bState = FindNextFile(file, &fileData);
-	while (bState)
-	{
-		//wcstombs(line,(const char*)fileData.cFileName,259);
-		list.push_back(fileData.cFileName);
-		bState = FindNextFile(file, &fileData);
-	}
-
-}
-
 
 void CAEyeView::OnSetting()
 {

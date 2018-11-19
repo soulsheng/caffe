@@ -69,6 +69,15 @@
     <ClInclude Include="DialogSetting.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="..\common\CFileUtilitySTL.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\CFileUtilityWIN.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\commonDefinitionFile.h">
+      <Filter>common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AEye.cpp">
@@ -109,6 +118,12 @@
     </ClCompile>
     <ClCompile Include="DialogSetting.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CFileUtilitySTL.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\CFileUtilityWIN.cpp">
+      <Filter>common</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

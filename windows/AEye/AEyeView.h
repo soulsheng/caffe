@@ -95,9 +95,6 @@ public:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
 	afx_msg void OnOpenFileList();
 
-	void getFilePathFromDialog(std::string &path);
-	void getFileListFromPath(std::string &path, std::vector<std::string> &list);
-
 	afx_msg void OnSetting();
 };
 
