@@ -171,7 +171,7 @@ void CAEyeView::OnFileOpen()
 	CFileDialog dlg(TRUE,
 		"*.jpg;*.jpeg", NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		"jpg(*.jpg;*.jpeg)|*.jpg;*.jpeg|| All Files (*.*) |*.*||||", this);
+		"图片jpg或jpeg(*.jpg;*.jpeg)|*.jpg;*.jpeg| 所有格式 (*.*) |*.*||", this);
 	INT_PTR result = dlg.DoModal();
 	if (result == IDOK)
 	{
@@ -184,13 +184,20 @@ void CAEyeView::OnFileOpen()
 
 		int msTime = 0;
 		std::vector<Prediction> result;
-		predict(file, result, msTime);
+		
+		if (predict(file, result, msTime))
+		{
+			cachePredictionResult(shortname, result, file);
 
-		cachePredictionResult(shortname, result, file);
+			updateUI(shortname, file, result, msTime);
 
-		updateUI(shortname, file, result, msTime);
-
-		outputInfo("");
+			outputInfo("");
+		}
+		else
+		{ 
+			outputInfo(file.c_str());
+			outputInfo("预测失败，请选择一张图片！");
+		}
 	}
 
 }
@@ -407,7 +414,7 @@ void CAEyeView::OnOpenFileList()
 	std::vector<std::string>		imageList;
 
 	//getFileListFromPath(imagePath, imageList);
-	CFileUtilityWIN::getFileListFromPath(imagePath, _T("jpg"), imageList);
+	CFileUtilityWIN::getFileListFromPath(imagePath, _T("*"), imageList);
 
 	int msTime = 0;
 	std::vector<Prediction> result;
@@ -419,9 +426,8 @@ void CAEyeView::OnOpenFileList()
 		string file = imagePath + *i;
 		string shortname = CFileUtilitySTL::getShortFileName(file);
 
-		predict(file, result, msTime);
-
-		cachePredictionResult(shortname, result, file);
+		if(predict(file, result, msTime))
+			cachePredictionResult(shortname, result, file);
 
 		//updateUI(shortname, file, result, msTime);
 	}
