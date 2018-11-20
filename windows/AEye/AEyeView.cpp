@@ -480,6 +480,22 @@ void CAEyeView::OnSetting()
 	mean_file = vecSetting[2];
 	label_file = vecSetting[3];
 
+
+	StringVec::iterator itr = vecSetting.begin();
+	for (; itr != vecSetting.end(); itr++)
+	{
+		if (!CFileUtilitySTL::checkFileExist(*itr))
+			break;
+	}
+
+	// 配置文件内容有误
+	if (vecSetting.end() != itr)
+	{
+		AfxMessageBox("配置文件内容有误，其中有些文件无法打开！");
+		outputInfo("配置中止，请重新配置！");
+		return;
+	}
+
 	classifier.load(model_file, trained_file, mean_file, label_file);
 
 	outputInfo("识别模型配置完成！");
