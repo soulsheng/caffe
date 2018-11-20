@@ -412,9 +412,14 @@ void CAEyeView::OnOpenFileList()
 		return;
 
 	std::vector<std::string>		imageList;
+	std::vector<std::string>		fmts;
+	fmts.push_back(_T("jpg"));
+	fmts.push_back(_T("jepg"));
+	fmts.push_back(_T("png"));
+	fmts.push_back(_T("bmp"));
 
 	//getFileListFromPath(imagePath, imageList);
-	CFileUtilityWIN::getFileListFromPath(imagePath, _T("*"), imageList);
+	CFileUtilityWIN::getFileListFromPathNest(imagePath, _T(""), fmts, imageList);
 
 	int msTime = 0;
 	std::vector<Prediction> result;
