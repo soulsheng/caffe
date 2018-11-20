@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
-    <TargetName>$(ProjectName)a</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
