@@ -461,8 +461,11 @@ void CAEyeView::OnSetting()
 	outputInfo("正在配置识别模型...");
 
 	CDialogSetting dlgSetting;
-	if (!dlgSetting.DoModal())
+	if (IDOK != dlgSetting.DoModal())
+	{
+		outputInfo("配置中止，请重新配置！");
 		return;
+	}
 
 	std::vector<std::string> vecSetting = dlgSetting.getStringVecSetting();
 

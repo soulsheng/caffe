@@ -81,3 +81,6 @@ add progress bar for batch processing
 
 add progress bar for setting dnn
 
+dnn label not update after importing new model 
+
+done - crash when cancel to set dnn 
