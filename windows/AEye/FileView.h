@@ -28,7 +28,7 @@ public:
 	void	AddBranch(ClassTop1Map& names);
 	void	AddBranch(FilesMap& names);
 
-	HTREEITEM InsertItemByScore(float score, std::string filename);
+	HTREEITEM InsertItemByScore(float score, std::string filename, int nCountSub=0);
 
 // Ьиад
 protected:

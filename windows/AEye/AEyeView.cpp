@@ -247,6 +247,8 @@ void CAEyeView::sortPredictionResult()
 {
 	outputInfo("∑÷¿‡≈≈–Ú£∫");
 
+	m_ClassTop1Map.clear();
+
 	clock_t msTimeAll = clock();
 
 	for (PredictionResultMap::iterator itrPRM = m_PredictionResultList.begin();

@@ -143,7 +143,7 @@ void CFileView::AddBranch(ClassTop1Map& names)
 
 		Top1Map::iterator itr = top1Map.begin();
 
-		hRootSubCurrent = InsertItemByScore(itr->first, itrCTM->first);
+		hRootSubCurrent = InsertItemByScore(itr->first, itrCTM->first, top1Map.size());
 
 		for (; itr != top1Map.end(); itr++)
 			m_wndFileView.InsertItem(itr->second.c_str(), 2, 2, hRootSubCurrent);
@@ -163,7 +163,7 @@ void CFileView::AddBranch(FilesMap& names)
 	m_wndFileView.SelectItem(m_hRootUnsort);
 }
 
-HTREEITEM CFileView::InsertItemByScore(float score, std::string filename)
+HTREEITEM CFileView::InsertItemByScore(float score, std::string filename, int nCountSub /*= 0*/)
 {
 	HTREEITEM hRootSubCurrent;
 
@@ -178,7 +178,10 @@ HTREEITEM CFileView::InsertItemByScore(float score, std::string filename)
 	else
 		m_hRootCurrent = m_hRootUncertainMost;
 
-	hRootSubCurrent = m_wndFileView.InsertItem(filename.c_str(), 2, 2, m_hRootCurrent);
+	std::ostringstream os;
+	os << filename << "(" << nCountSub << ")";
+
+	hRootSubCurrent = m_wndFileView.InsertItem(os.str().c_str(), 2, 2, m_hRootCurrent);
 
 	return hRootSubCurrent;
 }

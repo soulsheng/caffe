@@ -73,7 +73,7 @@ find class in file view
 
 show class without code/id
 
-count uo samples to item of file view 
+count samples to item of file view and sort
 
 add property page for level condition for file view
 
@@ -84,3 +84,4 @@ add progress bar for setting dnn
 dnn label not update after importing new model 
 
 done - crash when cancel to set dnn 
+
