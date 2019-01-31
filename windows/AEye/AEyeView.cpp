@@ -416,7 +416,7 @@ void CAEyeView::OnOpenFileList()
 	std::vector<std::string>		imageList;
 	std::vector<std::string>		fmts;
 	fmts.push_back(_T("jpg"));
-	fmts.push_back(_T("jepg"));
+	fmts.push_back(_T("jpeg"));
 	fmts.push_back(_T("png"));
 	fmts.push_back(_T("bmp"));
 
