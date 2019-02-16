@@ -1,0 +1,255 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DA557A99-D2B7-4A51-9B67-AA81910A27B8}</ProjectGuid>
+    <RootNamespace>AEye</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Dynamic</UseOfMfc>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="..\CommonSettings.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="..\CommonSettings.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>$(SolutionDir)..\include;$(SolutionDir)..\include\caffe\proto;$(CUDA_PATH)\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(CUDA_PATH)\lib\$(Platform);$(LibraryPath)</LibraryPath>
+    <OutDir>..\..\Build\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>..\..\Build\\Int\$(ProjectName)\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../common;../../../NugetPackages/boost.1.59.0.0/lib/native/include;../../../NugetPackages/gflags.2.1.2.1/build/native/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>libcaffe.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <Midl>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+      <ValidateAllParameters>true</ValidateAllParameters>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0804</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>./;../common;../../../NugetPackages/boost.1.59.0.0/lib/native/include;../../../NugetPackages/gflags.2.1.2.1/build/native/include;../../../NugetPackages/glog.0.3.3.0/build/native/include;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native/include;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native/include;../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native/include;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/include;../../../NugetPackages/OpenCV.2.4.10/build/native/include;../../../NugetPackages/protobuf-v120.2.6.1/build/native/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLOG_NO_ABBREVIATED_SEVERITIES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>libboost_chrono-vc120-mt-1_59.lib;libboost_date_time-vc120-mt-1_59.lib;libboost_filesystem-vc120-mt-1_59.lib;libboost_python-vc120-mt-1_59.lib;libboost_system-vc120-mt-1_59.lib;libboost_thread-vc120-mt-1_59.lib;gflags.lib;libglog.lib;hdf5.lib;hdf5_hl.lib;hdf5_tools.lib;LevelDb.lib;lmdb.lib;libopenblas.dll.a;opencv_core2410.lib;opencv_highgui2410.lib;opencv_imgproc2410.lib;libprotobuf.lib;libcaffe.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../../../NugetPackages\boost_chrono-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_date_time-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_filesystem-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_python2.7-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_system-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_thread-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages/gflags.2.1.2.1/build/native\x64\v120\dynamic\Lib;../../../NugetPackages/glog.0.3.3.0/build/native\lib\x64\v120\$(Configuration)\dynamic;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native\lib\x64;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native\lib\x64\v120\$(Configuration);../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native\lib\x64;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/lib\x64;../../../NugetPackages/OpenCV.2.4.10/build/native/lib\x64\v120\$(Configuration);../../../NugetPackages/protobuf-v120.2.6.1/build/native\lib\x64\v120\$(Configuration);$(OutDir)</AdditionalLibraryDirectories>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>./;../common;../../../NugetPackages/boost.1.59.0.0/lib/native/include;../../../NugetPackages/gflags.2.1.2.1/build/native/include;../../../NugetPackages/glog.0.3.3.0/build/native/include;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native/include;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native/include;../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native/include;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/include;../../../NugetPackages/OpenCV.2.4.10/build/native/include;../../../NugetPackages/protobuf-v120.2.6.1/build/native/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>GLOG_NO_ABBREVIATED_SEVERITIES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Optimization>Disabled</Optimization>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../../../NugetPackages\boost_chrono-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_date_time-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_filesystem-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_python2.7-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_system-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages\boost_thread-vc120.1.59.0.0\lib\native\address-model-64\lib;../../../NugetPackages/gflags.2.1.2.1/build/native\x64\v120\dynamic\Lib;../../../NugetPackages/glog.0.3.3.0/build/native\lib\x64\v120\$(Configuration)\dynamic;../../../NugetPackages/hdf5-v120-complete.1.8.15.2/lib/native\lib\x64;../../../NugetPackages/LevelDB-vc120.1.2.0.0/build/native\lib\x64\v120\$(Configuration);../../../NugetPackages/lmdb-v120-clean.0.9.14.0/lib/native\lib\x64;../../../NugetPackages/OpenBLAS.0.2.14.1/lib/native/lib\x64;../../../NugetPackages/OpenCV.2.4.10/build/native/lib\x64\v120\$(Configuration);../../../NugetPackages/protobuf-v120.2.6.1/build/native\lib\x64\v120\$(Configuration);$(OutDir)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libboost_chrono-vc120-mt-gd-1_59.lib;libboost_date_time-vc120-mt-gd-1_59.lib;libboost_filesystem-vc120-mt-gd-1_59.lib;libboost_python-vc120-mt-gd-1_59.lib;libboost_system-vc120-mt-gd-1_59.lib;libboost_thread-vc120-mt-gd-1_59.lib;gflags.lib;libglog.lib;hdf5.lib;hdf5_hl.lib;hdf5_tools.lib;LevelDb.lib;lmdbD.lib;libopenblas.dll.a;opencv_core2410d.lib;opencv_highgui2410d.lib;opencv_imgproc2410d.lib;libprotobuf.lib;libcaffe.lib;$(CudaDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\CFileUtilitySTL.h" />
+    <ClInclude Include="..\common\CFileUtilityWIN.h" />
+    <ClInclude Include="..\common\Classifier.h" />
+    <ClInclude Include="..\common\commonDefinitionFile.h" />
+    <ClInclude Include="AEye.h" />
+    <ClInclude Include="AEyeDoc.h" />
+    <ClInclude Include="AEyeView.h" />
+    <ClInclude Include="ClassView.h" />
+    <ClInclude Include="commonDefinition.h" />
+    <ClInclude Include="DialogSetting.h" />
+    <ClInclude Include="FileView.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="OutputWnd.h" />
+    <ClInclude Include="PropertiesWnd.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="targetver.h" />
+    <ClInclude Include="ViewTree.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\CFileUtilitySTL.cpp" />
+    <ClCompile Include="..\common\CFileUtilityWIN.cpp" />
+    <ClCompile Include="..\common\Classifier.cpp" />
+    <ClCompile Include="AEye.cpp" />
+    <ClCompile Include="AEyeDoc.cpp" />
+    <ClCompile Include="AEyeView.cpp" />
+    <ClCompile Include="ClassView.cpp" />
+    <ClCompile Include="DialogSetting.cpp" />
+    <ClCompile Include="FileView.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OutputWnd.cpp" />
+    <ClCompile Include="PropertiesWnd.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ViewTree.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AEye.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\AEye.ico" />
+    <Image Include="res\AEyeDoc.ico" />
+    <Image Include="res\classview.bmp" />
+    <Image Include="res\classview_hc.bmp" />
+    <Image Include="res\class_view.ico" />
+    <Image Include="res\class_view_hc.ico" />
+    <Image Include="res\explorer.bmp" />
+    <Image Include="res\explorer_hc.bmp" />
+    <Image Include="res\fileview.bmp" />
+    <Image Include="res\fileview_hc.bmp" />
+    <Image Include="res\file_view.ico" />
+    <Image Include="res\file_view_hc.ico" />
+    <Image Include="res\menuimages.bmp" />
+    <Image Include="res\menuimages_hc.bmp" />
+    <Image Include="res\output_wnd.ico" />
+    <Image Include="res\output_wnd_hc.ico" />
+    <Image Include="res\properties.bmp" />
+    <Image Include="res\properties_hc.bmp" />
+    <Image Include="res\properties_wnd.ico" />
+    <Image Include="res\properties_wnd_hc.ico" />
+    <Image Include="res\sort.bmp" />
+    <Image Include="res\sort_hc.bmp" />
+    <Image Include="res\Toolbar.bmp" />
+    <Image Include="res\Toolbar256.bmp" />
+    <Image Include="UserImages.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\AEye.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\libcaffe\libcaffe.vcxproj">
+      <Project>{a9acef83-7b63-4574-a554-89ce869ea141}</Project>
+      <Private>false</Private>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+      <CopyLocalSatelliteAssemblies>false</CopyLocalSatelliteAssemblies>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+      <UseLibraryDependencyInputs>true</UseLibraryDependencyInputs>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="AEye.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

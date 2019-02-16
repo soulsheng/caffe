@@ -1,0 +1,14 @@
+net: "../../models/ship12/train_val.prototxt"
+test_iter: 8
+test_interval: 256
+base_lr: 0.01
+lr_policy: "step"
+gamma: 0.1
+stepsize: 1000
+display: 256
+max_iter: 20000
+momentum: 0.9
+weight_decay: 0.0005
+snapshot: 1000
+snapshot_prefix: "../../models/ship12/ship12_train"
+solver_mode: GPU

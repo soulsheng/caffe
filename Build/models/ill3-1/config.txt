@@ -1,0 +1,4 @@
+../../Build/models/ill3-1/deploy.prototxt
+../../Build/models/ill3-1/train_best.caffemodel
+../../Build/models/ill3-1/ill3-1_mean.binaryproto
+../../Build/models/ill3-1/classIndex.txt

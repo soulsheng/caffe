@@ -58,7 +58,6 @@ Makefile.config
 # Data and models are either
 # 1. reference, and not casually committed
 # 2. custom, and live on their own unless they're deliberated contributed
-data/*
 models/*
 *.caffemodel
 *.caffemodel.h5
@@ -79,6 +78,7 @@ distribute/*
 python/caffe/proto/
 cmake_build
 .cmake_build
+build/data
 
 # Generated documentation
 docs/_site
@@ -101,3 +101,8 @@ MANIFEST-*
 *.sdf
 *.opensdf
 *.pdb
+
+*Release*
+*Debug*
+*ipch*
+*.aps

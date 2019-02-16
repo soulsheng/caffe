@@ -54,7 +54,7 @@ To build Caffe Matlab wrapper set `MatlabSupport` to `true` and `MatlabDir` to t
 
 #### Remark
 After you have built solution with Matlab support, in order to use it you have to:
-* add the generated `matcaffe` folder to Matlab search path, and
+* add the generated `matcaffe` folder to Matlab search path, andjavascript:;
 * add `<caffe_root>\Build\x64\Release` to your system path.
 
 ### Build
@@ -63,3 +63,25 @@ Now, you should be able to build `.\windows\Caffe.sln`
 ## Further Details
 
 Refer to the BVLC/caffe master branch README for all other details such as license, citation, and so on.
+
+
+## To Do
+
+done - warn up gpu
+
+find class in file view
+
+show class without code/id
+
+count samples to item of file view and sort
+
+add property page for level condition for file view
+
+add progress bar for batch processing 
+
+add progress bar for setting dnn
+
+dnn label not update after importing new model 
+
+done - crash when cancel to set dnn 
+

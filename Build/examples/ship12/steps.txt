@@ -1,0 +1,53 @@
+
+
+data path :
+
+path-jpg-train	=G:\Caffe-data\肠镜-病症信息库（6大类）\
+path-jpg-val	=G:\Caffe-data\肠镜-病症信息库（6大类）\
+path-lable		=G:\Caffe-data\ill6\
+
+path-lmdb-train		=G:\Caffe-data\ill6\ill6_train_lmdb\
+path-lmdb-val		=G:\Caffe-data\ill6\ill6_val_lmdb\
+
+path-mean-trian	=G:/ImageNet/
+
+RESIZE_HEIGHT=256
+RESIZE_WIDTH=256
+
+###step 1: convert data format	### 	
+    
+    eg.  
+convert_imageset \
+    --resize_height=$RESIZE_HEIGHT \
+    --resize_width=$RESIZE_WIDTH \
+    --shuffle \
+    $path-jpg-train \
+    $path-lable/train.txt \
+    $path-lmdb-train
+    
+convert_imageset \
+    --resize_height=$RESIZE_HEIGHT \
+    --resize_width=$RESIZE_WIDTH \
+    --shuffle \
+    $path-jpg-val \
+    $path-lable/val.txt \
+    $path-lmdb-train
+    
+###step 2: compute mean 		###
+
+compute_image_mean \
+	$path-lmdb-train/ill6_train_lmdb \
+	$path-mean-trian/ill6_mean.binaryproto
+	
+path-model 		=models/bvlc_reference_caffenet/
+
+
+###step 3: start train			###
+
+caffe train --solver=$path-model/solver.prototxt
+
+###step 4: resume train			###
+
+caffe train --solver=$path-model/solver.prototxt --snapshot=$path-model/caffenet_train_10000.solverstate.h5
+    
+    

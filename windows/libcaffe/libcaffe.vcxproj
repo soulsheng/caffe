@@ -58,12 +58,12 @@
     </PostBuildEvent>
     <CudaCompile>
       <TargetMachinePlatform>64</TargetMachinePlatform>
-      <CodeGeneration>$(CudaArchitecture);%(CodeGeneration)</CodeGeneration>
+      <CodeGeneration>$(CudaArchitecture);</CodeGeneration>
       <GenerateLineInfo>true</GenerateLineInfo>
-      <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL= </AdditionalOptions>
+      <AdditionalOptions>-Xcudafe "--diag_suppress=exception_spec_override_incompat --diag_suppress=useless_using_declaration --diag_suppress=field_without_dll_interface" -D_SCL_SECURE_NO_WARNINGS -DGFLAGS_DLL_DECL=  -Xcompiler "/wd 4819"</AdditionalOptions>
     </CudaCompile>
     <ClCompile>
-      <DisableSpecificWarnings>4661;4005;4812;4715;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4661;4005;4812;4715;4819;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <AdditionalIncludeDirectories>$(ProjectDir)\..\..\src\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GLOG_NO_ABBREVIATED_SEVERITIES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>

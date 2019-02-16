@@ -1,0 +1,52 @@
+
+
+data path :
+
+path-jpg-train	=F:/ImageNet/ILSVRC2012_img_train/
+path-jpg-val	=F:/ImageNet/ILSVRC2012_img_val/
+path-lable		=F:/ImageNet/bin/lable/
+
+path-lmdb		=G:/ImageNet/
+
+path-mean-trian	=G:/ImageNet/
+
+RESIZE_HEIGHT=256
+RESIZE_WIDTH=256
+
+###step 1: convert data format	### 	
+
+#spend 10hs(256GB) for train, 50mins(16GB) for val   
+convert_imageset --resize_height=256 --resize_width=256 --shuffle ../ILSVRC2012_img_train/ lable/train.txt H:/ImageNet/lmdb/ilsvrc12_train_lmdb
+convert_imageset --resize_height=256 --resize_width=256 --shuffle ../ILSVRC2012_img_val/ lable/val.txt H:/ImageNet/lmdb/ilsvrc12_val_lmdb
+
+F:/ImageNet/bin/convert_imageset --resize_height=256 --resize_width=256 --shuffle F:/ImageNet/ILSVRC2012_img_train/ F:/ImageNet/bin/lable/train.txt G:/ImageNet/ilsvrc12_train_lmdb
+    
+    
+    eg.  
+convert_imageset \
+    --resize_height=$RESIZE_HEIGHT \
+    --resize_width=$RESIZE_WIDTH \
+    --shuffle \
+    $path-jpg-val \
+    $path-lable/train.txt \
+    $path-lmdb/ilsvrc12_val_lmdb
+    
+
+###step 2: compute mean 		###
+
+compute_image_mean \
+	$path-lmdb-train/ilsvrc12_train_lmdb \
+	$path-mean-trian/imagenet_mean.binaryproto
+	
+path-model 		=models/bvlc_reference_caffenet/
+
+
+###step 3: start train			###
+
+caffe train --solver=$path-model/solver.prototxt
+
+###step 4: resume train			###
+
+caffe train --solver=$path-model/solver.prototxt --snapshot=$path-model/caffenet_train_10000.solverstate.h5
+    
+    
