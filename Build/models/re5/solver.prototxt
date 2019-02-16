@@ -11,4 +11,4 @@ momentum: 0.9
 weight_decay: 0.005
 snapshot: 100
 snapshot_prefix: "../../models/re5/re5_train"
-solver_mode: GPU
+solver_mode: CPU
