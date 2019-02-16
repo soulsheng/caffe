@@ -106,3 +106,5 @@ MANIFEST-*
 *Debug*
 *ipch*
 *.aps
+/data/VOCdevkit
+/data/VOC0712/test_name_size.txt
