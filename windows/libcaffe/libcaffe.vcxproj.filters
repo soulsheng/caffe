@@ -40,6 +40,12 @@
     <Filter Include="cu\solvers">
       <UniqueIdentifier>{fcb8114c-3425-41da-b30a-af2cb33dd851}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\3rdparty">
+      <UniqueIdentifier>{36ec6a8b-03a8-49d2-82d1-7dadba760197}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\3rdparty">
+      <UniqueIdentifier>{799dfc49-75ce-4a50-af8d-f296e16ce20d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\src\caffe\util\im2col.cpp">
@@ -374,6 +380,18 @@
     </ClCompile>
     <ClCompile Include="..\..\src\caffe\layers\video_data_layer.cpp">
       <Filter>src\layers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\util\bbox_util.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\util\im_transforms.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\util\sampler.cpp">
+      <Filter>src\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\src\caffe\3rdparty\hungarian.cpp">
+      <Filter>src\3rdparty</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -716,6 +734,9 @@
     <ClInclude Include="..\..\include\caffe\layers\video_data_layer.hpp">
       <Filter>include\layers</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\caffe\3rdparty\hungarian.h">
+      <Filter>include\3rdparty</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="..\..\src\caffe\layers\contrastive_loss_layer.cu">
@@ -909,6 +930,9 @@
     </CudaCompile>
     <CudaCompile Include="..\..\src\caffe\layers\smooth_L1_loss_layer.cu">
       <Filter>cu\layers</Filter>
+    </CudaCompile>
+    <CudaCompile Include="..\..\src\caffe\util\bbox_util.cu">
+      <Filter>cu\util</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
