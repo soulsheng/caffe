@@ -15,7 +15,7 @@ CDialogSetting::CDialogSetting(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CDialogSetting::IDD, pParent)
 	, m_FileNameModel(_T("..\\..\\models\\bvlc_reference_caffenet\\deploy.prototxt"))
 	, m_FileNameTrain(_T("..\\..\\models\\bvlc_reference_caffenet\\bvlc_reference_caffenet.caffemodel"))
-	, m_FileNameMean(_T("..\\..\\data\\ilsvrc12\\imagenet_mean.binaryproto"))
+	, m_FileNameMean(_T("104,117,123"))
 	, m_FileNameLabel(_T("..\\..\\data\\ilsvrc12\\synset_words_cn.txt"))
 	, m_FileNameConfig(_T("..\\..\\data\\ilsvrc12\\config.txt"))
 {
@@ -153,15 +153,19 @@ void CDialogSetting::OnBnClickedButtonOpenFileConfig()
 
 	CFileUtilitySTL::readFilelist(m_FileNameConfig.GetBuffer(), lines);
 
-	if (lines.size() != 4)
+	if (lines.size() < 4)
 	{
-		AfxMessageBox("配置文件内容有误，必须包含4行文件名称！");
+		AfxMessageBox("配置文件内容有误，必须包含不少于3行文件名称！");
 		return;
 	}
 
 	StringVec::iterator itr = lines.begin();
 	for (; itr != lines.end(); itr++)
 	{
+		tstring ext = CFileUtilitySTL::getFileExt(*itr);
+		if (ext == tstring("binaryproto") || ext.empty() )
+			continue;
+
 		if ( !CFileUtilitySTL::checkFileExist(*itr) )
 			break;
 	}

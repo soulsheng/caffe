@@ -41,4 +41,6 @@ public:
 
 	static bool		checkFileExist(tstring& filepath);
 
+	static tstring		getFileExt(tstring& filepath);
+
 };

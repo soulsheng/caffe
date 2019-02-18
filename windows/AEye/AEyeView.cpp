@@ -184,19 +184,39 @@ void CAEyeView::OnFileOpen()
 
 		int msTime = 0;
 		std::vector<Prediction> result;
-		
-		if (predict(file, result, msTime))
-		{
-			cachePredictionResult(shortname, result, file);
+		std::vector<Detection> resultDetection;
 
-			updateUI(shortname, file, result, msTime);
+		if (classifier.getTestType() == ENUM_CLASSIFICATION) {
 
-			outputInfo("");
+			if (predict(file, result, msTime))
+			{
+				cachePredictionResult(shortname, result, file);
+
+				updateUI(shortname, file, result, msTime);
+
+				outputInfo("");
+			}
+			else
+			{
+				outputInfo(file.c_str());
+				outputInfo("预测失败，请重新选择一张图片！");
+			}
 		}
 		else
-		{ 
-			outputInfo(file.c_str());
-			outputInfo("预测失败，请选择一张图片！");
+		{
+			if (detect(file, resultDetection, msTime))
+			{
+				cacheDetectionResult(shortname, resultDetection, file);
+
+				updateUI(shortname, file, resultDetection, msTime);
+
+				outputInfo("");
+			}
+			else
+			{
+				outputInfo(file.c_str());
+				outputInfo("检测失败，请重新选择一张图片！");
+			}
 		}
 	}
 
@@ -209,6 +229,14 @@ void CAEyeView::cachePredictionResult(string shortname, std::vector<Prediction> 
 	m_FilesMap.insert(FilesPair(shortname, file));
 }
 
+void CAEyeView::cacheDetectionResult(string shortname, std::vector<Detection> result, string file)
+{
+	m_DetectionResultList.insert(DetectionResultPair(shortname, result));
+
+	m_FilesMap.insert(FilesPair(shortname, file));
+
+}
+
 bool CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int &msTime)
 {
 
@@ -219,6 +247,20 @@ bool CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int 
 	clock_t t = clock();
 	predictions = classifier.Classify(img);
 	
+	msTime = clock() - t;
+
+	return true;
+}
+
+bool CAEyeView::detect(string &file, std::vector<Detection> &detections, int &msTime)
+{
+	cv::Mat img = cv::imread(file, -1);
+	if (img.empty()) // "Unable to decode image " << file;
+		return false;
+
+	clock_t t = clock();
+	detections = classifier.Detect(img);
+
 	msTime = clock() - t;
 
 	return true;
@@ -375,6 +417,76 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Prediction
 		AddFileViewBranch(shortname, predictions[0].second);
 }
 
+Detection CAEyeView::findBestScore(std::vector<Detection>& detections)
+{
+	float score = 0.0f;
+	int bestIndex = 0;
+	for (size_t i = 0; i < detections.size(); ++i)
+	{
+		Detection p = detections[i];
+		if (p.score > score)
+		{
+			score = p.score;
+			bestIndex = i;
+		}
+	}
+
+	return detections[bestIndex];
+}
+
+void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection> &detections, int msTime, int type /*= LOG_TYPE_UI_ALL*/)
+{
+	std::ostringstream os;
+
+	os << "---------- 识别 "
+		<< shortname << " ----------" << std::endl;
+
+	os << "---------- 耗费 "
+		<< msTime << " 毫秒, " << std::endl;
+
+	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
+
+	std::vector<tstring> labels = classifier.getLabels();
+
+	os << "score - label" << std::endl;
+
+	for (size_t i = 0; i < detections.size(); ++i) {
+		Detection p = detections[i];
+
+		if( p.label >= labels.size() )
+			os << std::fixed << std::setprecision(4) << p.score << " - \""
+				<< p.label << " error" << std::endl;
+		else
+			os << std::fixed << std::setprecision(4) << p.score << " - \""
+				<< labels[p.label] << "\"" << std::endl;
+#if 0
+		if (type & LOG_TYPE_UI_PROPERTY)
+		{
+			pFrame->updateProperty(i * 2 + 1, p.label);
+			pFrame->updateProperty(i * 2 + 2, p.score);
+		}
+#endif
+	}
+
+	Detection bestDetection = findBestScore(detections);
+
+	if (type & LOG_TYPE_UI_VIEW)
+	{
+		if (!image.IsNull())
+			image.Destroy();
+
+		image.Load(file.c_str());
+
+		m_currentClassNamePredict = classifier.getLabels()[bestDetection.label];
+	}
+
+	if (type & LOG_TYPE_UI_OUTPUT)
+		outputInfo(os.str().c_str());
+
+	if (type & LOG_TYPE_UI_FILE)
+		AddFileViewBranch(shortname, bestDetection.score);
+}
+
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
@@ -476,34 +588,18 @@ void CAEyeView::OnSetting()
 
 	std::vector<std::string> vecSetting = dlgSetting.getStringVecSetting();
 
-	if (vecSetting.size() != 4)
-	{
-		AfxMessageBox("需要4个参数，请设置完全！");
-		return;
-	}
-
 	model_file = vecSetting[0];
 	trained_file = vecSetting[1];
 	mean_file = vecSetting[2];
 	label_file = vecSetting[3];
+	
+	mean_value = "104,117,123";
+	if (!mean_file.empty())
+		mean_value = "";
 
+	classifier.load(model_file, trained_file, mean_file, label_file, mean_value);
 
-	StringVec::iterator itr = vecSetting.begin();
-	for (; itr != vecSetting.end(); itr++)
-	{
-		if (!CFileUtilitySTL::checkFileExist(*itr))
-			break;
-	}
-
-	// 配置文件内容有误
-	if (vecSetting.end() != itr)
-	{
-		AfxMessageBox("配置文件内容有误，其中有些文件无法打开！");
-		outputInfo("配置中止，请重新配置！");
-		return;
-	}
-
-	classifier.load(model_file, trained_file, mean_file, label_file);
+	classifier.setTestType(ENUM_DETECTION);
 
 	outputInfo("识别模型配置完成！");
 	outputInfo("");
@@ -511,9 +607,17 @@ void CAEyeView::OnSetting()
 	std::string strDemo("..\\..\\examples\\images\\cat.jpg");
 	int msTime = 0;
 	std::vector<Prediction> result;
+	std::vector<Detection> resultDetection;
 
-	if( predict(strDemo, result, msTime) )
-		outputInfo("识别测试完成！");
+	if (classifier.getTestType() == ENUM_CLASSIFICATION) {
+		if (predict(strDemo, result, msTime))
+			outputInfo("目标识别测试完成！");
+	}
+	else {
+		if (detect(strDemo, resultDetection, msTime))
+			outputInfo("目标识别与检测测试完成！");
+	}
+
 	outputInfo("");
 
 

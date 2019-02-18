@@ -1,0 +1,4 @@
+G:/file/code/dnn/caffe-ssd-win-diy/models/VOC07/deploy.prototxt
+G:/file/code/dnn/caffe-ssd-win-diy/models/VOC07/train_best.caffemodel
+
+G:/file/code/dnn/caffe-ssd-win-diy/models/VOC07/classes_voc.txt

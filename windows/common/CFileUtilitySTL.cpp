@@ -316,3 +316,9 @@ bool CFileUtilitySTL::checkFileExist(tstring& filepath)
 	file.close();
 	return true;
 }
+
+tstring CFileUtilitySTL::getFileExt(tstring& filepath)
+{
+	int indexEnd = filepath.find_last_of('.');
+	return filepath.substr(indexEnd + 1);
+}

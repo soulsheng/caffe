@@ -3,13 +3,14 @@
 
 Classifier::Classifier()
 { 
-
+	testType = ENUM_CLASSIFICATION;
 }
 
 void Classifier::load(const string& model_file,
 	const string& trained_file,
 	const string& mean_file,
-	const string& label_file) {
+	const string& label_file,
+	const string& mean_value) {
 #ifdef CPU_ONLY
 	Caffe::set_mode(Caffe::CPU);
 #else
@@ -30,7 +31,7 @@ void Classifier::load(const string& model_file,
 	input_geometry_ = cv::Size(input_layer->width(), input_layer->height());
 
 	/* Load the binaryproto mean file. */
-	SetMean(mean_file);
+	SetMean(mean_file, mean_value);
 
 	/* Load labels. */
 	std::ifstream labels(label_file.c_str());
@@ -47,7 +48,7 @@ void Classifier::load(const string& model_file,
 
 /* Return the top N predictions. */
 std::vector<Prediction> Classifier::Classify(const cv::Mat& img, int N) {
-	std::vector<float> output = Predict(img);
+	std::vector<float> output = ClassifyKernel(img);
 
 	N = std::min<int>(labels_.size(), N);
 	std::vector<int> maxN = Argmax(output, N);
@@ -60,43 +61,101 @@ std::vector<Prediction> Classifier::Classify(const cv::Mat& img, int N) {
 	return predictions;
 }
 
+std::vector<Detection> Classifier::Detect(const cv::Mat& img) {
+	std::vector<vector<float> > outputs = DetectKernel(img);
+
+	std::vector<Detection> detections;
+	
+	for (int i = 0; i < outputs.size(); ++i) 
+	{
+		const vector<float>& output = outputs[i];
+
+		detections.push_back(Detection(output));
+	}
+
+	return detections;
+}
+
 bool Classifier::isInitialized()
 {
 	return NULL != net_;
 }
 
-/* Load the mean file in binaryproto format. */
-void Classifier::SetMean(const string& mean_file) {
-	BlobProto blob_proto;
-	ReadProtoFromBinaryFileOrDie(mean_file.c_str(), &blob_proto);
-
-	/* Convert from BlobProto to Blob<float> */
-	Blob<float> mean_blob;
-	mean_blob.FromProto(blob_proto);
-	CHECK_EQ(mean_blob.channels(), num_channels_)
-		<< "Number of channels of mean file doesn't match input layer.";
-
-	/* The format of the mean file is planar 32-bit float BGR or grayscale. */
-	std::vector<cv::Mat> channels;
-	float* data = mean_blob.mutable_cpu_data();
-	for (int i = 0; i < num_channels_; ++i) {
-		/* Extract an individual channel. */
-		cv::Mat channel(mean_blob.height(), mean_blob.width(), CV_32FC1, data);
-		channels.push_back(channel);
-		data += mean_blob.height() * mean_blob.width();
-	}
-
-	/* Merge the separate channels into a single image. */
-	cv::Mat mean;
-	cv::merge(channels, mean);
-
-	/* Compute the global mean pixel value and create a mean image
-	* filled with this value. */
-	cv::Scalar channel_mean = cv::mean(mean);
-	mean_ = cv::Mat(input_geometry_, mean.type(), channel_mean);
+void Classifier::setTestType(TestType type)
+{
+	testType = type;
 }
 
-std::vector<float> Classifier::Predict(const cv::Mat& img) {
+TestType Classifier::getTestType()
+{
+	return testType;
+}
+
+std::vector<string>& Classifier::getLabels()
+{
+	return labels_;
+}
+
+/* Load the mean file in binaryproto format. */
+void Classifier::SetMean(const string& mean_file, const string& mean_value) {
+	cv::Scalar channel_mean;
+	if (!mean_file.empty()) {
+		CHECK(mean_value.empty()) <<
+			"Cannot specify mean_file and mean_value at the same time";
+		BlobProto blob_proto;
+		ReadProtoFromBinaryFileOrDie(mean_file.c_str(), &blob_proto);
+
+		/* Convert from BlobProto to Blob<float> */
+		Blob<float> mean_blob;
+		mean_blob.FromProto(blob_proto);
+		CHECK_EQ(mean_blob.channels(), num_channels_)
+			<< "Number of channels of mean file doesn't match input layer.";
+
+		/* The format of the mean file is planar 32-bit float BGR or grayscale. */
+		std::vector<cv::Mat> channels;
+		float* data = mean_blob.mutable_cpu_data();
+		for (int i = 0; i < num_channels_; ++i) {
+			/* Extract an individual channel. */
+			cv::Mat channel(mean_blob.height(), mean_blob.width(), CV_32FC1, data);
+			channels.push_back(channel);
+			data += mean_blob.height() * mean_blob.width();
+		}
+
+		/* Merge the separate channels into a single image. */
+		cv::Mat mean;
+		cv::merge(channels, mean);
+
+		/* Compute the global mean pixel value and create a mean image
+		* filled with this value. */
+		cv::Scalar channel_mean = cv::mean(mean);
+		mean_ = cv::Mat(input_geometry_, mean.type(), channel_mean);
+	}
+
+	if (!mean_value.empty()) {
+		CHECK(mean_file.empty()) <<
+			"Cannot specify mean_file and mean_value at the same time";
+		stringstream ss(mean_value);
+		vector<float> values;
+		string item;
+		while (getline(ss, item, ',')) {
+			float value = std::atof(item.c_str());
+			values.push_back(value);
+		}
+		CHECK(values.size() == 1 || values.size() == num_channels_) <<
+			"Specify either 1 mean_value or as many as channels: " << num_channels_;
+
+		std::vector<cv::Mat> channels;
+		for (int i = 0; i < num_channels_; ++i) {
+			/* Extract an individual channel. */
+			cv::Mat channel(input_geometry_.height, input_geometry_.width, CV_32FC1,
+				cv::Scalar(values[i]));
+			channels.push_back(channel);
+		}
+		cv::merge(channels, mean_);
+	}
+}
+
+std::vector<float> Classifier::ClassifyKernel(const cv::Mat& img) {
 	Blob<float>* input_layer = net_->input_blobs()[0];
 	input_layer->Reshape(1, num_channels_,
 		input_geometry_.height, input_geometry_.width);
@@ -115,6 +174,38 @@ std::vector<float> Classifier::Predict(const cv::Mat& img) {
 	const float* begin = output_layer->cpu_data();
 	const float* end = begin + output_layer->channels();
 	return std::vector<float>(begin, end);
+}
+
+std::vector<vector<float> > Classifier::DetectKernel(const cv::Mat& img) {
+	Blob<float>* input_layer = net_->input_blobs()[0];
+	input_layer->Reshape(1, num_channels_,
+		input_geometry_.height, input_geometry_.width);
+	/* Forward dimension change to all layers. */
+	net_->Reshape();
+
+	std::vector<cv::Mat> input_channels;
+	WrapInputLayer(&input_channels);
+
+	Preprocess(img, &input_channels);
+
+	net_->Forward();
+
+	/* Copy the output layer to a std::vector */
+	Blob<float>* result_blob = net_->output_blobs()[0];
+	const float* result = result_blob->cpu_data();
+	const int num_det = result_blob->height();
+	vector<vector<float> > detections;
+	for (int k = 0; k < num_det; ++k) {
+		if (result[0] == -1) {
+			// Skip invalid detection.
+			result += 7;
+			continue;
+		}
+		vector<float> detection(result, result + 7);
+		detections.push_back(detection);
+		result += 7;
+	}
+	return detections;
 }
 
 /* Wrap the input layer of the network in separate cv::Mat objects

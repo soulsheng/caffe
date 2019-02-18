@@ -10,6 +10,9 @@
 typedef std::pair<std::string, std::vector<Prediction>>	PredictionResultPair;
 typedef std::map<std::string, std::vector<Prediction>>	PredictionResultMap;
 
+typedef std::pair<std::string, std::vector<Detection>>	DetectionResultPair;
+typedef std::map<std::string, std::vector<Detection>>	DetectionResultMap;
+
 
 
 
@@ -55,8 +58,10 @@ public:
 	afx_msg void OnFileOpen();
 
 	void cachePredictionResult(string shortname, std::vector<Prediction> result, string file);
+	void cacheDetectionResult(string shortname, std::vector<Detection> result, string file);
 
 	bool predict(string &file, std::vector<Prediction> &predictions, int &msTime);
+	bool detect(string &file, std::vector<Detection> &detections, int &msTime);
 
 	void	switchBilViewByName(std::string name);
 	void AddFileViewBranch(std::string fileNameShort, float score);
@@ -72,10 +77,14 @@ protected:
 	void	outputInfo(const char* message, int value = -1);	// print to output window or status bar
 
 	void	updateUI(string &shortname, string &file, std::vector<Prediction> &predictions, int msTime, int type = LOG_TYPE_UI_ALL);
+	void	updateUI(string &shortname, string &file, std::vector<Detection> &detections, int msTime, int type = LOG_TYPE_UI_ALL);
+
+	Detection findBestScore(std::vector<Detection>& detections);
 
 protected:
 	Classifier classifier;
 
+	DetectionResultMap	m_DetectionResultList;
 	PredictionResultMap	m_PredictionResultList;
 	FilesMap			m_FilesMap;
 
@@ -87,6 +96,7 @@ protected:
 	string trained_file;
 	string mean_file;
 	string label_file;
+	string mean_value;
 
 	CImage image;
 

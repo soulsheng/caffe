@@ -1,0 +1,4 @@
+G:/file/code/dnn/caffe/Build/models/re5/deploy.prototxt
+G:/file/code/dnn/caffe/Build/models/re5/train_best.caffemodel
+G:/file/code/dnn/caffe/Build/models/re5/re5_mean.binaryproto
+G:/file/code/dnn/caffe/Build/models/re5/classIndex.txt

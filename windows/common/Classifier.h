@@ -21,6 +21,34 @@ using std::string;
 /* Pair (label, confidence) representing a prediction. */
 typedef std::pair<string, float> Prediction;
 
+// Detection format: [image_id, label, score, xmin, ymin, xmax, ymax].
+typedef struct tagDetection
+{
+	float image_id;
+	float label, score;
+	float xmin, ymin, xmax, ymax;
+	tagDetection(float *buf)
+	{
+		memcpy(this, buf, sizeof(tagDetection));
+	}
+	tagDetection(const std::vector<float>& buf)
+	{
+		image_id = buf[0];
+		label = buf[1];
+		score = buf[2];
+		xmin = buf[3];
+		ymin = buf[4];
+		xmax = buf[5];
+		ymax = buf[6];
+	}
+} Detection;
+
+enum TestType
+{
+	ENUM_CLASSIFICATION,
+	ENUM_DETECTION
+};
+
 class Classifier {
 public:
 	Classifier();
@@ -28,16 +56,24 @@ public:
 	void load(const string& model_file,
 		const string& trained_file,
 		const string& mean_file,
-		const string& label_file);
+		const string& label_file,
+		const string& mean_value);
 
 	std::vector<Prediction> Classify(const cv::Mat& img, int N = 5);
+	std::vector<Detection> Detect(const cv::Mat& img);
 
 	bool isInitialized();
 
-private:
-	void SetMean(const string& mean_file);
+	void setTestType(TestType type);
+	TestType getTestType();
 
-	std::vector<float> Predict(const cv::Mat& img);
+	std::vector<string>& getLabels();
+
+private:
+	void SetMean(const string& mean_file, const string& mean_value);
+
+	std::vector<float> ClassifyKernel(const cv::Mat& img);
+	std::vector<vector<float> > DetectKernel(const cv::Mat& img);
 
 	void WrapInputLayer(std::vector<cv::Mat>* input_channels);
 
@@ -50,6 +86,8 @@ private:
 	int num_channels_;
 	cv::Mat mean_;
 	std::vector<string> labels_;
+
+	TestType testType;
 };
 
 static bool PairCompare(const std::pair<float, int>& lhs,
