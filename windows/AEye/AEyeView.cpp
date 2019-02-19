@@ -85,11 +85,23 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 	::SetStretchBltMode(hDC, HALFTONE);
 	::SetBrushOrgEx(hDC, 0, 0, NULL);
 
-	image.Draw(hDC, rect);
+	image.Draw(hDC, 0, 0/*, rect*/);
+
+	CPen pNewPen;
+	pNewPen.CreatePen(PS_SOLID, 1, RGB(255, 69, 0)); // 矩形框颜色
+	CPen* poldPen = pDC->SelectObject(&pNewPen);
 
 	pDC->SetBkMode(TRANSPARENT); //设置背景为透明！
 	pDC->SetTextColor(RGB(255, 69, 0)); // 字体橙色
 	pDC->TextOut(rect.Width()*7.0f / 8, rect.Height()*1.0f / 12, m_currentClassNamePredict.c_str());
+
+	pDC->MoveTo(boxDetection.left, boxDetection.top);
+	pDC->LineTo(boxDetection.right, boxDetection.top);
+	pDC->LineTo(boxDetection.right, boxDetection.bottom);
+	pDC->LineTo(boxDetection.left, boxDetection.bottom);
+	pDC->LineTo(boxDetection.left, boxDetection.top);
+
+	pDC->SelectObject(poldPen);
 
 	ReleaseDC(pDC);//释放picture控件的DC
 }
@@ -477,7 +489,10 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection>
 
 		image.Load(file.c_str());
 
-		m_currentClassNamePredict = classifier.getLabels()[bestDetection.label];
+		int nLabelId = int(bestDetection.label + 0.01) - 1;
+		m_currentClassNamePredict = classifier.getLabels()[nLabelId];
+		boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(), 
+			bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight() );
 	}
 
 	if (type & LOG_TYPE_UI_OUTPUT)
