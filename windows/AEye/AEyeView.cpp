@@ -93,7 +93,7 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 
 	pDC->SetBkMode(TRANSPARENT); //设置背景为透明！
 	pDC->SetTextColor(RGB(255, 69, 0)); // 字体橙色
-	pDC->TextOut(rect.Width()*7.0f / 8, rect.Height()*1.0f / 12, m_currentClassNamePredict.c_str());
+	pDC->TextOut(boxDetection.left, boxDetection.top*0.9, m_currentClassNamePredict.c_str());
 
 	pDC->MoveTo(boxDetection.left, boxDetection.top);
 	pDC->LineTo(boxDetection.right, boxDetection.top);
@@ -431,6 +431,9 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Prediction
 
 Detection CAEyeView::findBestScore(std::vector<Detection>& detections)
 {
+	if (detections.size() == 0)
+		return Detection();
+
 	float score = 0.0f;
 	int bestIndex = 0;
 	for (size_t i = 0; i < detections.size(); ++i)
@@ -460,6 +463,7 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection>
 
 	std::vector<tstring> labels = classifier.getLabels();
 
+	os << "检测到 " << detections.size() << " 个目标" << endl;
 	os << "score - label" << std::endl;
 
 	for (size_t i = 0; i < detections.size(); ++i) {
@@ -489,10 +493,13 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection>
 
 		image.Load(file.c_str());
 
-		int nLabelId = int(bestDetection.label + 0.01) - 1;
-		m_currentClassNamePredict = classifier.getLabels()[nLabelId];
-		boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(), 
-			bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight() );
+		if (detections.size() != 0)
+		{
+			int nLabelId = int(bestDetection.label + 0.01) - 1;
+			m_currentClassNamePredict = classifier.getLabels()[nLabelId];
+			boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(), 
+				bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight() );
+		}
 	}
 
 	if (type & LOG_TYPE_UI_OUTPUT)

@@ -41,6 +41,10 @@ typedef struct tagDetection
 		xmax = buf[5];
 		ymax = buf[6];
 	}
+	tagDetection()
+	{
+		memset(this, 0, sizeof(tagDetection));
+	}
 } Detection;
 
 enum TestType
