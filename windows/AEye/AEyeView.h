@@ -57,9 +57,14 @@ protected:
 public:
 	afx_msg void OnFileOpen();
 
+	void classifyDetect2UI(string &file);
+	void classifyDetect2UI(cv::Mat &img);
+
 	void cachePredictionResult(string shortname, std::vector<Prediction> result, string file);
 	void cacheDetectionResult(string shortname, std::vector<Detection> result, string file);
 
+	bool predict(cv::Mat &img, std::vector<Prediction> &predictions, int &msTime);
+	bool detect(cv::Mat &img, std::vector<Detection> &detections, int &msTime);
 	bool predict(string &file, std::vector<Prediction> &predictions, int &msTime);
 	bool detect(string &file, std::vector<Detection> &detections, int &msTime);
 
@@ -78,8 +83,12 @@ protected:
 
 	void	updateUI(string &shortname, string &file, std::vector<Prediction> &predictions, int msTime, int type = LOG_TYPE_UI_ALL);
 	void	updateUI(string &shortname, string &file, std::vector<Detection> &detections, int msTime, int type = LOG_TYPE_UI_ALL);
+	void	updateUI(cv::Mat &img, std::vector<Detection> &detections, int msTime, string file, int type = LOG_TYPE_UI_ALL);
 
 	Detection findBestScore(std::vector<Detection>& detections);
+
+	void	updateImage();
+	void	MatToCImage(cv::Mat& mat, CImage& cimage);
 
 protected:
 	Classifier classifier;
@@ -101,6 +110,9 @@ protected:
 	CImage image;
 
 	CRect   boxDetection;
+
+	cv::VideoCapture video;
+	bool bVideoOrImage = true;	//a video file or a image
 
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

@@ -73,6 +73,8 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 	if (!pDoc)
 		return;
 
+	updateImage();
+
 	// TODO:  在此处为本机数据添加绘制代码
 	if (image.IsNull())
 		return;
@@ -183,7 +185,7 @@ void CAEyeView::OnFileOpen()
 	CFileDialog dlg(TRUE,
 		"*.jpg;*.jpeg", NULL,
 		OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-		"图片jpg或jpeg(*.jpg;*.jpeg)|*.jpg;*.jpeg| 所有格式 (*.*) |*.*||", this);
+		"图片jpg或jpeg(*.jpg;*.jpeg)|*.jpg;*.jpeg| 视频avi或mp4(*.avi;*.mp4)|*.avi;*.mp4| 所有格式 (*.*) |*.*||", this);
 	INT_PTR result = dlg.DoModal();
 	if (result == IDOK)
 	{
@@ -192,46 +194,100 @@ void CAEyeView::OnFileOpen()
 		CString fileName = dlg.GetPathName();
 
 		string file = fileName.GetBuffer();
-		string shortname = CFileUtilitySTL::getShortFileName(file);
+		//classifyDetect2UI(file);
 
-		int msTime = 0;
-		std::vector<Prediction> result;
-		std::vector<Detection> resultDetection;
+		string fileExt = CFileUtilitySTL::getFileExt(file);
+		if ( fileExt == "jpg" | fileExt == "jpeg")
+			bVideoOrImage = false;
+		else if(fileExt == "avi" | fileExt == "mp4")
+			bVideoOrImage = true;
 
-		if (classifier.getTestType() == ENUM_CLASSIFICATION) {
+		if (bVideoOrImage)
+		{
+			// Read video
+			video.open(file);
 
-			if (predict(file, result, msTime))
+			// Exit if video is not opened
+			if (!video.isOpened())
 			{
-				cachePredictionResult(shortname, result, file);
+				cout << "Could not read video file" << endl;
+				return ;
 
-				updateUI(shortname, file, result, msTime);
-
-				outputInfo("");
-			}
-			else
-			{
-				outputInfo(file.c_str());
-				outputInfo("预测失败，请重新选择一张图片！");
 			}
 		}
 		else
-		{
-			if (detect(file, resultDetection, msTime))
-			{
-				cacheDetectionResult(shortname, resultDetection, file);
+			classifyDetect2UI(file);
 
-				updateUI(shortname, file, resultDetection, msTime);
-
-				outputInfo("");
-			}
-			else
-			{
-				outputInfo(file.c_str());
-				outputInfo("检测失败，请重新选择一张图片！");
-			}
-		}
 	}
 
+}
+
+void CAEyeView::classifyDetect2UI(string &file)
+{
+	string shortname = CFileUtilitySTL::getShortFileName(file);
+
+	int msTime = 0;
+	std::vector<Prediction> result;
+	std::vector<Detection> resultDetection;
+
+	if (classifier.getTestType() == ENUM_CLASSIFICATION) {
+
+		if (predict(file, result, msTime))
+		{
+			cachePredictionResult(shortname, result, file);
+
+			updateUI(shortname, file, result, msTime);
+
+			outputInfo("");
+		}
+		else
+		{
+			outputInfo(file.c_str());
+			outputInfo("预测失败，请重新选择一张图片！");
+		}
+	}
+	else
+	{
+		if (detect(file, resultDetection, msTime))
+		{
+			cacheDetectionResult(shortname, resultDetection, file);
+
+			updateUI(shortname, file, resultDetection, msTime);
+
+			outputInfo("");
+		}
+		else
+		{
+			outputInfo(file.c_str());
+			outputInfo("检测失败，请重新选择一张图片！");
+		}
+	}
+}
+
+void CAEyeView::classifyDetect2UI(cv::Mat &img)
+{
+	int msTime = 0;
+	std::vector<Prediction> result;
+	std::vector<Detection> resultDetection;
+
+	if (classifier.getTestType() == ENUM_CLASSIFICATION) {
+
+		if (predict(img, result, msTime))
+		{
+			//updateUI(shortname, file, result, msTime);
+
+			outputInfo("");
+		}
+	}
+	else
+	{
+		if (detect(img, resultDetection, msTime))
+		{
+			updateUI(img, resultDetection, msTime, "", LOG_TYPE_UI_VIEW | LOG_TYPE_UI_OUTPUT);
+
+			outputInfo("");
+		}
+	}
 }
 
 void CAEyeView::cachePredictionResult(string shortname, std::vector<Prediction> result, string file)
@@ -251,14 +307,19 @@ void CAEyeView::cacheDetectionResult(string shortname, std::vector<Detection> re
 
 bool CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int &msTime)
 {
-
 	cv::Mat img = cv::imread(file, -1);
+	
+	return predict(img, predictions, msTime);
+}
+
+bool CAEyeView::predict(cv::Mat &img, std::vector<Prediction> &predictions, int &msTime)
+{
 	if (img.empty()) // "Unable to decode image " << file;
 		return false;
 
 	clock_t t = clock();
 	predictions = classifier.Classify(img);
-	
+
 	msTime = clock() - t;
 
 	return true;
@@ -267,6 +328,12 @@ bool CAEyeView::predict(string &file, std::vector<Prediction> &predictions, int 
 bool CAEyeView::detect(string &file, std::vector<Detection> &detections, int &msTime)
 {
 	cv::Mat img = cv::imread(file, -1);
+	
+	return detect(img, detections, msTime);
+}
+
+bool CAEyeView::detect(cv::Mat &img, std::vector<Detection> &detections, int &msTime)
+{
 	if (img.empty()) // "Unable to decode image " << file;
 		return false;
 
@@ -449,14 +516,93 @@ Detection CAEyeView::findBestScore(std::vector<Detection>& detections)
 	return detections[bestIndex];
 }
 
-void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection> &detections, int msTime, int type /*= LOG_TYPE_UI_ALL*/)
+void CAEyeView::updateImage()
 {
+	cv::Mat frame;
+	if (bVideoOrImage)
+	{
+		bool ok = video.read(frame);
+		if (!ok)
+			return;
+
+		classifyDetect2UI(frame);
+	}
+}
+
+void CAEyeView::MatToCImage(cv::Mat& mat, CImage& cimage)
+{
+	if (0 == mat.total())
+	{
+		return;
+	}
+
+
+	int nChannels = mat.channels();
+	if ((1 != nChannels) && (3 != nChannels))
+	{
+		return;
+	}
+	int nWidth = mat.cols;
+	int nHeight = mat.rows;
+
+
+	//重建cimage
+	cimage.Destroy();
+	cimage.Create(nWidth, nHeight, 8 * nChannels);
+
+
+	//拷贝数据
+
+
+	uchar* pucRow;									//指向数据区的行指针
+	uchar* pucImage = (uchar*)cimage.GetBits();		//指向数据区的指针
+	int nStep = cimage.GetPitch();					//每行的字节数,注意这个返回值有正有负
+
+
+	if (1 == nChannels)								//对于单通道的图像需要初始化调色板
+	{
+		RGBQUAD* rgbquadColorTable;
+		int nMaxColors = 256;
+		rgbquadColorTable = new RGBQUAD[nMaxColors];
+		cimage.GetColorTable(0, nMaxColors, rgbquadColorTable);
+		for (int nColor = 0; nColor < nMaxColors; nColor++)
+		{
+			rgbquadColorTable[nColor].rgbBlue = (uchar)nColor;
+			rgbquadColorTable[nColor].rgbGreen = (uchar)nColor;
+			rgbquadColorTable[nColor].rgbRed = (uchar)nColor;
+		}
+		cimage.SetColorTable(0, nMaxColors, rgbquadColorTable);
+		delete[]rgbquadColorTable;
+	}
+
+
+	for (int nRow = 0; nRow < nHeight; nRow++)
+	{
+		pucRow = (mat.ptr<uchar>(nRow));
+		for (int nCol = 0; nCol < nWidth; nCol++)
+		{
+			if (1 == nChannels)
+			{
+				*(pucImage + nRow * nStep + nCol) = pucRow[nCol];
+			}
+			else if (3 == nChannels)
+			{
+				for (int nCha = 0; nCha < 3; nCha++)
+				{
+					*(pucImage + nRow * nStep + nCol * 3 + nCha) = pucRow[nCol * 3 + nCha];
+				}
+			}
+		}
+	}
+}
+
+void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int msTime, string file, int type /*= LOG_TYPE_UI_ALL*/)
+{
+	clock_t t = clock();
+
 	std::ostringstream os;
 
-	os << "---------- 识别 "
-		<< shortname << " ----------" << std::endl;
-
-	os << "---------- 耗费 "
+	os << "---------- 识别耗费 "
 		<< msTime << " 毫秒, " << std::endl;
 
 	CMainFrame* pFrame = (CMainFrame *)AfxGetMainWnd();
@@ -469,12 +615,12 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection>
 	for (size_t i = 0; i < detections.size(); ++i) {
 		Detection p = detections[i];
 
-		if( p.label >= labels.size() )
+		if (p.label >= labels.size())
 			os << std::fixed << std::setprecision(4) << p.score << " - \""
-				<< p.label << " error" << std::endl;
+			<< p.label << " error" << std::endl;
 		else
 			os << std::fixed << std::setprecision(4) << p.score << " - \""
-				<< labels[p.label] << "\"" << std::endl;
+			<< labels[p.label] << "\"" << std::endl;
 #if 0
 		if (type & LOG_TYPE_UI_PROPERTY)
 		{
@@ -491,28 +637,53 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection>
 		if (!image.IsNull())
 			image.Destroy();
 
-		image.Load(file.c_str());
+		if (!file.empty())
+			image.Load(file.c_str());
+		else
+		{
+			MatToCImage(img, image);
+		}
 
 		if (detections.size() != 0)
 		{
 			int nLabelId = int(bestDetection.label + 0.01) - 1;
 			m_currentClassNamePredict = classifier.getLabels()[nLabelId];
-			boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(), 
-				bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight() );
+			boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(),
+				bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight());
 		}
 	}
+
+	if (type & LOG_TYPE_UI_FILE)
+	{
+		string shortname = CFileUtilitySTL::getShortFileName(file);
+
+		AddFileViewBranch(shortname, bestDetection.score);
+	}
+
+	msTime = clock() - t;
+
+	os << "---------- 其它耗费 "
+		<< msTime << " 毫秒, " << std::endl;
 
 	if (type & LOG_TYPE_UI_OUTPUT)
 		outputInfo(os.str().c_str());
 
-	if (type & LOG_TYPE_UI_FILE)
-		AddFileViewBranch(shortname, bestDetection.score);
+}
+
+void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection> &detections, int msTime, int type /*= LOG_TYPE_UI_ALL*/)
+{
+	cv::Mat img = cv::imread(file, -1);
+	if (img.empty()) // "Unable to decode image " << file;
+		return ;
+
+	updateUI(img, detections, msTime, file, type);
 }
 
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO:  在此添加消息处理程序代码和/或调用默认值
-	OnDraw(NULL);
+	if (nIDEvent == 0)
+		OnDraw(NULL);
 
 	CView::OnTimer(nIDEvent);
 }
@@ -524,7 +695,7 @@ int CAEyeView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
-	SetTimer(0, 30, NULL);	//定时显示，一个30毫秒触发一次的定时器，30帧/秒 
+	SetTimer(0, 50, NULL);	//定时显示，一个50毫秒触发一次的定时器，20帧/秒 
 
 	return 0;
 }
