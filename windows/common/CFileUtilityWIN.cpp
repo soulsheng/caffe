@@ -162,3 +162,57 @@ bool CFileUtilityWIN::getPathExist(tstring& path)
 	FindClose(hFind);
 	return bValue;
 }
+
+bool CFileUtilityWIN::removePath(tstring &path)
+{
+	if (!getPathExist(path))
+		return false;
+
+	HANDLE hFirstFile = NULL;
+	WIN32_FIND_DATA FindData;
+
+
+	char currdir[MAX_PATH] = { 0 };
+	sprintf_s(currdir, "%s\\*.*", path);
+
+
+	hFirstFile = ::FindFirstFile(currdir, &FindData);
+	if (hFirstFile == INVALID_HANDLE_VALUE)
+		return false;
+
+
+	BOOL bRes = true;
+
+
+	while (bRes)
+	{
+		bRes = ::FindNextFile(hFirstFile, &FindData);
+
+
+		if ((FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)) //发现目录
+		{
+			if (!strcmp(FindData.cFileName, ".") || !strcmp(FindData.cFileName, "..")) //.或..
+				continue;
+			else
+			{
+				char tmppath[MAX_PATH] = { 0 };
+				sprintf_s(tmppath, "%s\\%s", path, FindData.cFileName);
+
+
+				removePath( tstring(tmppath) );
+			}
+		}
+		else               //发现文件
+		{
+			char tmppath[MAX_PATH] = { 0 };
+			sprintf_s(tmppath, "%s\\%s", path, FindData.cFileName);
+			::DeleteFile(tmppath);
+		}
+	}
+	::FindClose(hFirstFile);
+	if (!RemoveDirectory(path.c_str()))
+	{
+		return false;
+	}
+	return true;
+}

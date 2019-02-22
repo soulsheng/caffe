@@ -13,6 +13,9 @@ typedef std::map<std::string, std::vector<Prediction>>	PredictionResultMap;
 typedef std::pair<std::string, std::vector<Detection>>	DetectionResultPair;
 typedef std::map<std::string, std::vector<Detection>>	DetectionResultMap;
 
+typedef std::pair<std::string, cv::Mat>	ImageSnapshotPair;
+typedef std::map<std::string, cv::Mat>	ImageSnapshotMap;
+
 
 
 
@@ -89,6 +92,12 @@ protected:
 
 	void	updateImage();
 	void	MatToCImage(cv::Mat& mat, CImage& cimage);
+	void	cacheImage(cv::Mat& mat);
+	void	saveImagesOnce();
+
+	bool	writeVideoBegin(const string& filename, int width, int height);
+	void	writeVideoKernel(cv::Mat &img);
+	void	writeVideoEnd();
 
 protected:
 	Classifier classifier;
@@ -113,6 +122,12 @@ protected:
 
 	cv::VideoCapture video;
 	bool bVideoOrImage = true;	//a video file or a image
+	string	m_fileCurrent;
+	string	m_pathSub;
+	long	m_msTimeStampBegin;
+	ImageSnapshotMap	m_ImageSnapshotMap;
+	bool	m_bUpdateImageNeed;
+	cv::VideoWriter m_VideoWriter;
 
 public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);

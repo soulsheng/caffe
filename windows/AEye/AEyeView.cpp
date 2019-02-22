@@ -196,6 +196,8 @@ void CAEyeView::OnFileOpen()
 		string file = fileName.GetBuffer();
 		//classifyDetect2UI(file);
 
+		m_fileCurrent = file;
+
 		string fileExt = CFileUtilitySTL::getFileExt(file);
 		if ( fileExt == "jpg" | fileExt == "jpeg")
 			bVideoOrImage = false;
@@ -214,6 +216,27 @@ void CAEyeView::OnFileOpen()
 				return ;
 
 			}
+
+			// create sub dir
+			string path = CFileUtilitySTL::getPathFileName(m_fileCurrent);
+			string name = CFileUtilitySTL::getOnlyFileName(m_fileCurrent);
+
+			m_pathSub = path + name + "\\";
+
+			if (CFileUtilityWIN::getPathExist(m_pathSub))
+				CFileUtilityWIN::removePath(m_pathSub);
+
+			CFileUtilityWIN::createPath(m_pathSub);
+
+			// ready to write result video
+			bool bRet = writeVideoBegin(m_pathSub + "Snapshots.avi", 
+				video.get(CV_CAP_PROP_FRAME_WIDTH), video.get(CV_CAP_PROP_FRAME_HEIGHT));
+
+			if (!bRet)
+				outputInfo("无法写入视频");
+
+			m_bUpdateImageNeed = true;
+			m_msTimeStampBegin = clock();
 		}
 		else
 			classifyDetect2UI(file);
@@ -433,7 +456,7 @@ void CAEyeView::switchBilViewByName(std::string name)
 
 void CAEyeView::setDefault()
 {
-
+	m_bUpdateImageNeed = false;
 }
 
 void CAEyeView::release()
@@ -518,14 +541,42 @@ Detection CAEyeView::findBestScore(std::vector<Detection>& detections)
 
 void CAEyeView::updateImage()
 {
+	if (!m_bUpdateImageNeed)
+		return;
+
 	cv::Mat frame;
 	if (bVideoOrImage)
 	{
+		clock_t t = clock();
+
+		std::ostringstream os;
+
 		bool ok = video.read(frame);
 		if (!ok)
-			return;
+		{
+			m_bUpdateImageNeed = false;
+			outputInfo("视频解析完成！");
 
+			writeVideoEnd();
+
+			outputInfo("抓拍图片保存完成！");
+
+			return;
+		}
+
+		os << "---------- 视频解析图片耗时 "
+			<< clock() - t << " 毫秒, " << std::endl;
+		
 		classifyDetect2UI(frame);
+
+		t = clock();
+
+		cacheImage(frame);
+
+		os << "---------- 抓拍耗时 "
+			<< clock() - t << " 毫秒, " << std::endl;
+
+		outputInfo(os.str().c_str());
 	}
 }
 
@@ -596,6 +647,72 @@ void CAEyeView::MatToCImage(cv::Mat& mat, CImage& cimage)
 	}
 }
 
+void CAEyeView::cacheImage(cv::Mat& mat)
+{
+	// cache 1 image in nFrameStride image,  1/nFrameStride images
+	int nFrameStride = 1;
+	static int nFrame = 0;
+	if (nFrame++ % nFrameStride)
+		return;
+
+	cv::Rect rect(boxDetection.left, boxDetection.top, boxDetection.right - boxDetection.left, boxDetection.bottom - boxDetection.top);
+	cv::rectangle(mat, rect, cv::Scalar(0, 0, 255));
+	
+	long msTime = clock() - m_msTimeStampBegin;
+	long sTimeInteger = msTime/1000;
+
+	std::ostringstream os;
+
+	os << std::setw(3) << std::setfill('0') << sTimeInteger / 60 << "min";
+
+	os << std::setw(2) << std::setfill('0') << sTimeInteger % 60 << "s";
+
+	os << std::setw(3) << std::setfill('0') << msTime % 1000 << "ms" << ".jpg\0";
+
+	//m_ImageSnapshotMap.insert(ImageSnapshotPair(os.str(), mat));
+	writeVideoKernel(mat);
+}
+
+void CAEyeView::saveImagesOnce()
+{
+	for (ImageSnapshotMap::iterator itr = m_ImageSnapshotMap.begin(); itr != m_ImageSnapshotMap.end(); itr++)
+	{
+		cv::imwrite( m_pathSub + itr->first, itr->second);
+
+		itr->second.release();
+	}
+
+	m_ImageSnapshotMap.clear();
+}
+
+bool CAEyeView::writeVideoBegin(const string& filename, int width, int height)
+{
+	m_VideoWriter.open(filename, CV_FOURCC('M', 'P', '4', 'V'), 25.0f, cv::Size(width, height));
+	// check if we succeeded
+	if (!m_VideoWriter.isOpened()) {
+		cerr << "Could not open the output video file for write\n";
+		return false;
+	}
+
+	return true;
+}
+
+void CAEyeView::writeVideoKernel(cv::Mat &img)
+{
+	if (!m_VideoWriter.isOpened())
+		return;
+
+	m_VideoWriter.write(img);
+}
+
+void CAEyeView::writeVideoEnd()
+{
+	if (!m_VideoWriter.isOpened())
+		return;
+
+	m_VideoWriter.release();
+}
+
 void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int msTime, string file, int type /*= LOG_TYPE_UI_ALL*/)
 {
 	clock_t t = clock();
@@ -648,9 +765,11 @@ void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int m
 		{
 			int nLabelId = int(bestDetection.label + 0.01) - 1;
 			m_currentClassNamePredict = classifier.getLabels()[nLabelId];
-			boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(),
-				bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight());
 		}
+
+		boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(),
+			bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight());
+		
 	}
 
 	if (type & LOG_TYPE_UI_FILE)
@@ -695,7 +814,7 @@ int CAEyeView::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		return -1;
 
 	// TODO:  在此添加您专用的创建代码
-	SetTimer(0, 50, NULL);	//定时显示，一个50毫秒触发一次的定时器，20帧/秒 
+	SetTimer(0, 40, NULL);	//定时显示，一个40毫秒触发一次的定时器，25帧/秒 
 
 	return 0;
 }

@@ -7,6 +7,13 @@ tstring CFileUtilitySTL::getShortFileName(tstring& fullpath)
 	return fullpath.substr(indexEnd + 1);
 }
 
+tstring CFileUtilitySTL::getOnlyFileName(tstring& fullpath)
+{
+	tstring shortname = getShortFileName(fullpath);
+	int indexEnd = shortname.find_last_of('.');
+	return shortname.substr(0, indexEnd );
+}
+
 tstring CFileUtilitySTL::getPathFileName(tstring& fullpath)
 {
 	int indexEnd = fullpath.find_last_of(_T("\\/"));

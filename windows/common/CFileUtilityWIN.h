@@ -23,4 +23,6 @@ public:
 
 	static bool		getPathExist(tstring& path);
 
+	static bool removePath(tstring &path);
+
 };
