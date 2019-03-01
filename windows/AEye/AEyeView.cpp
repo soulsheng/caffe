@@ -756,7 +756,7 @@ void CAEyeView::updateUI(cv::Mat &img, int msTime, string file)
 	std::vector<tstring> labels = classifier.getLabels();
 
 	os << "检测到 " << m_DetectionMap.size() << " 个目标" << endl;
-	os << "score - label" << std::endl;
+	os << "score - label, " << std::endl;
 
 	for (DetectionMap::iterator itr = m_DetectionMap.begin(); itr != m_DetectionMap.end(); ++itr) {
 		Detection& p = itr->second;
@@ -766,7 +766,7 @@ void CAEyeView::updateUI(cv::Mat &img, int msTime, string file)
 			<< p.label << " error" << std::endl;
 		else
 			os << std::fixed << std::setprecision(4) << p.score << " - \""
-			<< labels[p.label] << "\"" << std::endl;
+			<< labels[p.label-1] << "\"" << std::endl;
 #if 0
 		if (type & LOG_TYPE_UI_PROPERTY)
 		{

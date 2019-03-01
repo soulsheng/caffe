@@ -136,7 +136,7 @@ BOOL CAEyeApp::InitInstance()
 	m_pMainWnd->ShowWindow(SW_SHOW);
 	m_pMainWnd->UpdateWindow();
 
-	m_pMainWnd->SetWindowText("AEye-消化系统疾病智能诊断Demo-山仪所六室");
+	m_pMainWnd->SetWindowText("AEye-海面目标分类识别与检测定位Demo-山仪所六室");
 
 	return TRUE;
 }
