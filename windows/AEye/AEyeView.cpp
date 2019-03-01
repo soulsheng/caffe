@@ -95,13 +95,28 @@ void CAEyeView::OnDraw(CDC* /*pDC*/)
 
 	pDC->SetBkMode(TRANSPARENT); //设置背景为透明！
 	pDC->SetTextColor(RGB(255, 69, 0)); // 字体橙色
-	pDC->TextOut(boxDetection.left, boxDetection.top*0.9, m_currentClassNamePredict.c_str());
 
-	pDC->MoveTo(boxDetection.left, boxDetection.top);
-	pDC->LineTo(boxDetection.right, boxDetection.top);
-	pDC->LineTo(boxDetection.right, boxDetection.bottom);
-	pDC->LineTo(boxDetection.left, boxDetection.bottom);
-	pDC->LineTo(boxDetection.left, boxDetection.top);
+	for (DetectionMap::iterator itr = m_DetectionMap.begin(); itr != m_DetectionMap.end(); ++itr) {
+
+		Detection& p = itr->second;
+		int nLabelId = int(p.label + 0.01) - 1;
+		ostringstream os;
+		os << classifier.getLabels()[nLabelId] << " = " << std::setprecision(3) << p.score;
+
+		RECT rect;
+		rect.left	= (int)(p.xmin * image.GetWidth() + 0.5);
+		rect.top = (int)(p.ymin * image.GetHeight() + 0.5);
+		rect.right = (int)(p.xmax * image.GetWidth() + 0.5);
+		rect.bottom = (int)(p.ymax * image.GetHeight() + 0.5);
+
+		pDC->TextOut(rect.left, rect.top - 15, os.str().c_str() );
+
+		pDC->MoveTo(rect.left, rect.top);
+		pDC->LineTo(rect.right, rect.top);
+		pDC->LineTo(rect.right, rect.bottom);
+		pDC->LineTo(rect.left, rect.bottom);
+		pDC->LineTo(rect.left, rect.top);
+	}
 
 	pDC->SelectObject(poldPen);
 
@@ -248,6 +263,7 @@ void CAEyeView::OnFileOpen()
 void CAEyeView::classifyDetect2UI(string &file)
 {
 	string shortname = CFileUtilitySTL::getShortFileName(file);
+	cv::Mat img = cv::imread(file, -1);
 
 	int msTime = 0;
 	std::vector<Prediction> result;
@@ -271,11 +287,11 @@ void CAEyeView::classifyDetect2UI(string &file)
 	}
 	else
 	{
-		if (detect(file, resultDetection, msTime))
+		if (detect(img, msTime))
 		{
 			cacheDetectionResult(shortname, resultDetection, file);
 
-			updateUI(shortname, file, resultDetection, msTime);
+			updateUI(img, msTime, "");
 
 			outputInfo("");
 		}
@@ -304,9 +320,9 @@ void CAEyeView::classifyDetect2UI(cv::Mat &img)
 	}
 	else
 	{
-		if (detect(img, resultDetection, msTime))
+		if (detect(img, msTime))
 		{
-			updateUI(img, resultDetection, msTime, "", LOG_TYPE_UI_VIEW | LOG_TYPE_UI_OUTPUT);
+			updateUI(img, msTime, "");
 
 			outputInfo("");
 		}
@@ -362,6 +378,19 @@ bool CAEyeView::detect(cv::Mat &img, std::vector<Detection> &detections, int &ms
 
 	clock_t t = clock();
 	detections = classifier.Detect(img);
+
+	msTime = clock() - t;
+
+	return true;
+}
+
+bool CAEyeView::detect(cv::Mat &img, int &msTime)
+{
+	if (img.empty()) // "Unable to decode image " << file;
+		return false;
+
+	clock_t t = clock();
+	m_DetectionMap = classifier.Detect(img, 10, 0.6);
 
 	msTime = clock() - t;
 
@@ -713,7 +742,7 @@ void CAEyeView::writeVideoEnd()
 	m_VideoWriter.release();
 }
 
-void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int msTime, string file, int type /*= LOG_TYPE_UI_ALL*/)
+void CAEyeView::updateUI(cv::Mat &img, int msTime, string file)
 {
 	clock_t t = clock();
 
@@ -726,11 +755,11 @@ void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int m
 
 	std::vector<tstring> labels = classifier.getLabels();
 
-	os << "检测到 " << detections.size() << " 个目标" << endl;
+	os << "检测到 " << m_DetectionMap.size() << " 个目标" << endl;
 	os << "score - label" << std::endl;
 
-	for (size_t i = 0; i < detections.size(); ++i) {
-		Detection p = detections[i];
+	for (DetectionMap::iterator itr = m_DetectionMap.begin(); itr != m_DetectionMap.end(); ++itr) {
+		Detection& p = itr->second;
 
 		if (p.label >= labels.size())
 			os << std::fixed << std::setprecision(4) << p.score << " - \""
@@ -747,9 +776,9 @@ void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int m
 #endif
 	}
 
-	Detection bestDetection = findBestScore(detections);
+	//Detection bestDetection = findBestScore(detections);
 
-	if (type & LOG_TYPE_UI_VIEW)
+	if (1/*view*/)
 	{
 		if (!image.IsNull())
 			image.Destroy();
@@ -760,7 +789,7 @@ void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int m
 		{
 			MatToCImage(img, image);
 		}
-
+		/*
 		if (detections.size() != 0)
 		{
 			int nLabelId = int(bestDetection.label + 0.01) - 1;
@@ -769,14 +798,7 @@ void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int m
 
 		boxDetection = CRect(bestDetection.xmin * image.GetWidth(), bestDetection.ymin * image.GetHeight(),
 			bestDetection.xmax * image.GetWidth(), bestDetection.ymax * image.GetHeight());
-		
-	}
-
-	if (type & LOG_TYPE_UI_FILE)
-	{
-		string shortname = CFileUtilitySTL::getShortFileName(file);
-
-		AddFileViewBranch(shortname, bestDetection.score);
+		*/
 	}
 
 	msTime = clock() - t;
@@ -784,8 +806,7 @@ void CAEyeView::updateUI(cv::Mat &img, std::vector<Detection> &detections, int m
 	os << "---------- 其它耗费 "
 		<< msTime << " 毫秒, " << std::endl;
 
-	if (type & LOG_TYPE_UI_OUTPUT)
-		outputInfo(os.str().c_str());
+	outputInfo(os.str().c_str());
 
 }
 
@@ -795,7 +816,7 @@ void CAEyeView::updateUI(string &shortname, string &file, std::vector<Detection>
 	if (img.empty()) // "Unable to decode image " << file;
 		return ;
 
-	updateUI(img, detections, msTime, file, type);
+	updateUI(img, msTime, file);
 }
 
 void CAEyeView::OnTimer(UINT_PTR nIDEvent)

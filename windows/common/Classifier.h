@@ -47,6 +47,10 @@ typedef struct tagDetection
 	}
 } Detection;
 
+typedef std::multimap<float, Detection, std::greater<float>> DetectionMap;
+typedef std::pair<float, Detection> DetectionPair;
+
+
 enum TestType
 {
 	ENUM_CLASSIFICATION,
@@ -65,6 +69,7 @@ public:
 
 	std::vector<Prediction> Classify(const cv::Mat& img, int N = 5);
 	std::vector<Detection> Detect(const cv::Mat& img);
+	DetectionMap Detect(const cv::Mat& img, int N, float fScoreMin=0.0f);
 
 	bool isInitialized();
 

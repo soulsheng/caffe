@@ -76,6 +76,36 @@ std::vector<Detection> Classifier::Detect(const cv::Mat& img) {
 	return detections;
 }
 
+DetectionMap Classifier::Detect(const cv::Mat& img, int N /*= 5*/, float fScoreMin)
+{
+	std::vector<vector<float> > outputs = DetectKernel(img);
+
+	DetectionMap detections;
+
+	for (int i = 0; i < outputs.size(); ++i)
+	{
+		const vector<float>& output = outputs[i];
+
+		Detection det(output);
+		detections.insert(DetectionPair(det.score, det));
+	}
+
+	DetectionMap detectionsFilter;
+	for (DetectionMap::iterator itr = detections.begin(); itr != detections.end(); ++itr) {
+		Detection& p = itr->second;
+
+		if (detectionsFilter.size() >=N)
+			break;
+
+		if (p.score >= fScoreMin)
+			detectionsFilter.insert(DetectionPair(p.score, p));
+		else
+			break;
+	}
+
+	return detectionsFilter;
+}
+
 bool Classifier::isInitialized()
 {
 	return NULL != net_;

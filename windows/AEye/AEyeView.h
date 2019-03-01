@@ -70,6 +70,7 @@ public:
 	bool detect(cv::Mat &img, std::vector<Detection> &detections, int &msTime);
 	bool predict(string &file, std::vector<Prediction> &predictions, int &msTime);
 	bool detect(string &file, std::vector<Detection> &detections, int &msTime);
+	bool detect(cv::Mat &img, int &msTime);
 
 	void	switchBilViewByName(std::string name);
 	void AddFileViewBranch(std::string fileNameShort, float score);
@@ -86,7 +87,7 @@ protected:
 
 	void	updateUI(string &shortname, string &file, std::vector<Prediction> &predictions, int msTime, int type = LOG_TYPE_UI_ALL);
 	void	updateUI(string &shortname, string &file, std::vector<Detection> &detections, int msTime, int type = LOG_TYPE_UI_ALL);
-	void	updateUI(cv::Mat &img, std::vector<Detection> &detections, int msTime, string file, int type = LOG_TYPE_UI_ALL);
+	void	updateUI(cv::Mat &img, int msTime, string file);
 
 	Detection findBestScore(std::vector<Detection>& detections);
 
@@ -101,6 +102,7 @@ protected:
 
 protected:
 	Classifier classifier;
+	DetectionMap		m_DetectionMap;
 
 	DetectionResultMap	m_DetectionResultList;
 	PredictionResultMap	m_PredictionResultList;
